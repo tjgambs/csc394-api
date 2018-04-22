@@ -11,10 +11,10 @@ from app.models.reviews import Reviews
 import requests
 
 
-mod = Blueprint("v1_search", __name__, url_prefix="/v1/search")
+MOD = Blueprint("v1_search", __name__, url_prefix="/v1/search")
 
 
-@mod.route("/all_terms", methods=["GET"])
+@MOD.route("/all_terms", methods=["GET"])
 def all_terms():
     q = (db.session.query(Terms)
          .order_by(Terms.stream))
@@ -29,7 +29,7 @@ def all_terms():
     )
 
 
-@mod.route("/all_subjects/<stream>", methods=["GET"])
+@MOD.route("/all_subjects/<stream>", methods=["GET"])
 def all_subjects(stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -47,7 +47,7 @@ def all_subjects(stream):
     )
 
 
-@mod.route("/by_subject_number/<subject>/<number>/<stream>", methods=["GET"])
+@MOD.route("/by_subject_number/<subject>/<number>/<stream>", methods=["GET"])
 def by_subject_and_number(subject, number, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -67,7 +67,7 @@ def by_subject_and_number(subject, number, stream):
     )
 
 
-@mod.route("/by_subject/<subject>/<stream>", methods=["GET"])
+@MOD.route("/by_subject/<subject>/<stream>", methods=["GET"])
 def by_subject(subject, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -86,7 +86,7 @@ def by_subject(subject, stream):
     )
 
 
-@mod.route("/by_number/<number>/<stream>", methods=["GET"])
+@MOD.route("/by_number/<number>/<stream>", methods=["GET"])
 def by_number(number, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -105,7 +105,7 @@ def by_number(number, stream):
     )
 
 
-@mod.route("/by_learning_domain/<learning_domain>/<stream>", methods=["GET"])
+@MOD.route("/by_learning_domain/<learning_domain>/<stream>", methods=["GET"])
 def by_learning_domain(learning_domain, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -124,7 +124,7 @@ def by_learning_domain(learning_domain, stream):
     )
 
 
-@mod.route("/by_learning_domain_subject/<learning_domain>/<subject>/<stream>", methods=["GET"])
+@MOD.route("/by_learning_domain_subject/<learning_domain>/<subject>/<stream>", methods=["GET"])
 def by_learning_domain_subject(learning_domain, subject, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -144,7 +144,7 @@ def by_learning_domain_subject(learning_domain, subject, stream):
     )
 
 
-@mod.route("/by_learning_domain_number/<learning_domain>/<number>/<stream>", methods=["GET"])
+@MOD.route("/by_learning_domain_number/<learning_domain>/<number>/<stream>", methods=["GET"])
 def by_learning_domain_number(learning_domain, number, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -164,7 +164,7 @@ def by_learning_domain_number(learning_domain, number, stream):
     )
 
 
-@mod.route("/by_learning_domain_subject_number/<learning_domain>/<subject>/<number>/<stream>", methods=["GET"])
+@MOD.route("/by_learning_domain_subject_number/<learning_domain>/<subject>/<number>/<stream>", methods=["GET"])
 def by_learning_domain_subject_number(learning_domain, subject, number, stream):
     sq = (db.session.query(TermCourses.course_id)
           .filter_by(stream=stream))
@@ -185,7 +185,7 @@ def by_learning_domain_subject_number(learning_domain, subject, number, stream):
     )
 
 
-@mod.route('/by_professor_id/<pid>')
+@MOD.route('/by_professor_id/<pid>')
 def by_professor_id(pid):
     q = (db.session.query(Professors)
          .filter_by(id=pid).first())
@@ -199,7 +199,7 @@ def by_professor_id(pid):
     )
 
 
-@mod.route("/by_class/<subject>/<number>/<stream>", methods=["GET"])
+@MOD.route("/by_class/<subject>/<number>/<stream>", methods=["GET"])
 def by_class(subject, number, stream):
     base_url = ('https://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx'
                 '?action=getclasses&strm=%s&subject=%s&catalog_nbr=%s')

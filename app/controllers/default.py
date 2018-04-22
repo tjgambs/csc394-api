@@ -5,10 +5,10 @@ from flask import Blueprint, jsonify
 from app.utils import prepare_json_response
 from app import app
 
-mod = Blueprint("default", __name__)
+MOD = Blueprint("default", __name__)
 
 
-@mod.route("/", methods=["GET"])
+@MOD.route("/", methods=["GET"])
 def index():
     return jsonify(
         prepare_json_response(
@@ -19,7 +19,7 @@ def index():
     )
 
 
-@mod.route("/help", methods=["GET"])
+@MOD.route("/help", methods=["GET"])
 def help():
     func_list = []
     for rule in app.url_map.iter_rules():
