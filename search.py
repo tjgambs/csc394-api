@@ -41,10 +41,11 @@ def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken[0] \
         and curriculum.foundation_courses   <= plan.coursesTaken[1] \
         and curriculum.gradReqs[2]          <= plan.typesTaken[2] \
-        and curriculum.gradReqs[3]          <= plan.typesTaken[3]:
+        and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
+        and curriculum.gradReqs[4]          <= plan.typesTaken[4]:
 
-        for i in range(4, len(plan.typesTaken)):
-            if curriculum.gradReqs[4]       <= plan.typesTaken[i]:
+        for i in range(5, len(plan.typesTaken)):
+            if curriculum.gradReqs[5]       <= plan.typesTaken[i]:
                 return True
     else:
         return False
