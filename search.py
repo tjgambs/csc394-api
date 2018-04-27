@@ -82,7 +82,8 @@ def generateCoursePlan(start, goal, maxCourses):
         if isGoal(current, goal):
             break
 
-        for suggestedCourse in getOptions():
+        for suggestedCourse in getOptions():                        # getOptions will be the database query
+
             new_cost = costSoFar[current] + 32                      # 32 is the arbitrary constant cost of selecting a class described above
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum)
             suggestedPlan.addCourse(suggestedCourse)
@@ -91,3 +92,6 @@ def generateCoursePlan(start, goal, maxCourses):
                 costSoFar[suggestedPlan] = new_cost
                 priority = new_cost + heuristics(suggestedCourse)
                 frontier.put(suggestedPlan, priority)
+                cameFrom[suggestedPlan] = current
+
+    return current.selectionOrder
