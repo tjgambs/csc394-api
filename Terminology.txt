@@ -1,0 +1,37 @@
+
+
+    - student_ID: Whenever we are referring to a student identifcation we refer to it as "Student_ID". Type: INT.
+
+    - number_of_classes_per_quarter: This is the number of courses that a student wishes to take in a given quarter. Type: INT.
+
+    - courses_taken: This a list of the course id's that the student has already taken. Type: LIST
+
+    - current_quarter: This is a holder for the current quarter. TODO: TYPE: NO TYPE SELECTED YET
+
+    - option_type: The user sets this to have the Automated of Manual modes activated.
+                    Key:
+                    0 - Automated / 1 - Manual.
+                Type: INT
+
+    - program: The determines the program that the user is currently in.
+                    Key:
+                    10 - ComputerScience
+                    20 - Information Systems: Standard Concentration
+                    21 - Information Systems: Business Analysis/Systems Analysis
+                    22 - Information Systems: Business Intelligence
+                    23 - Information Systems: DataBase Administration
+                    24 - Information Systems: IT Enterprise Management
+                TYPE: INT
+
+    - elective_preference: This determines the specialty of the Computer Science program. Numbers refer to the
+                           types taken list in the plan object (Plan.py)
+                    Key:
+                    5 - Software Systems Development
+                    6 - Theory
+                    7 - Data Science
+                    8 - Database Systems
+                    9 - AI
+                    10 - Software Engineering
+                    11 - Game and Real Time Systems
+                    12 - Human Computer Interaction
+                 TYPE:INT                  
