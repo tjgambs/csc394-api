@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from functools import wraps
 from flask import Blueprint, jsonify, request, abort, g
 from app.utils import prepare_json_response
 from app.models.user import User
@@ -8,6 +9,31 @@ from app import app, db, auth, basicauth
 
 
 MOD = Blueprint("v1_auth", __name__, url_prefix="/v1/auth")
+
+
+def admin_access(argument):
+    """ wrapper """
+
+    def decorator(func):
+        """ decorator """
+
+        @wraps(func)
+        def func_wrapper(*args, **kwargs):
+            """ Actual function """
+            has_access = False
+            account_type = g.user.account_type
+            for i in argument:
+                if account_type and i == account_type:
+                    has_access = True
+                    break
+            if not has_access:
+                abort(401)
+
+            return func(*args, **kwargs)
+
+        return func_wrapper
+
+    return decorator
 
 
 @MOD.route('/user', methods=['POST'])
