@@ -25,7 +25,8 @@ def new_user():
         abort(400)
     if User.query.filter_by(email=email).first() is not None:
         abort(400, 'Email already in use.')
-    user = User(email=email, first_name=first_name, last_name=last_name, account_type=account_type)
+    user = User(email=email, first_name=first_name,
+                last_name=last_name, account_type=account_type)
     user.hash_password(password)
     db.session.add(user)
     db.session.commit()
@@ -38,15 +39,28 @@ def new_user():
         )
     )
 
+
+@MOD.route('/user', methods=['GET'])
+@auth.login_required
+def get_user():
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=g.user.serialize
+        )
+    )
+
+
 @MOD.route('/update_user', methods=['POST'])
 @auth.login_required
 def update_user():
     if request.method == 'OPTIONS':
         return None
-    
+
     email = request.json.get('email')
-    first_name = request.json.get('firstName')
-    last_name = request.json.get('lastName')
+    first_name = request.json.get('first_name')
+    last_name = request.json.get('last_name')
     if email is None or first_name is None or last_name is None:
         abort(400)
 
