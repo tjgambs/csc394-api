@@ -27,8 +27,8 @@ def get_students():
     payload = [a.serialize for a in q.all()]
 
     data = {
-        'columns': payload[0].keys(),
-        'rows': payload
+        'columns': payload[0].keys() if payload else [],
+        'rows': payload if payload else []
     }
 
     return jsonify(
@@ -50,8 +50,8 @@ def get_accounts():
     payload = [a.serialize for a in q.all()]
 
     data = {
-        'columns': payload[0].keys(),
-        'rows': payload
+        'columns': payload[0].keys() if payload else [],
+        'rows': payload if payload else []
     }
 
     return jsonify(
