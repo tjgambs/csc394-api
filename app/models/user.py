@@ -9,7 +9,6 @@ class User(db.Model):
 
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer)
     email = db.Column(db.String(), index=True, primary_key=True)
     password_hash = db.Column(db.String())
     token = db.Column(db.String(), index=True)
@@ -25,7 +24,7 @@ class User(db.Model):
 
     def generate_auth_token(self, expiration=app.config['TOKEN_MAX_AGE'],):
         s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        self.token = s.dumps({'id': self.id})
+        self.token = s.dumps({'email': self.email})
         db.session.commit()
         return self.token
 
@@ -41,7 +40,6 @@ class User(db.Model):
     @property
     def serialize(self):
         return {
-            'id': self.id,
             'email': self.email,
             'token': self.token,
             'first_name': self.first_name,
@@ -67,7 +65,7 @@ class User(db.Model):
         if user_data is None:
             return None
         user = db.session.query(User).filter(
-            User.id == user_data['id']).first()
+            User.email == user_data['email']).first()
         if not user or user.token != token:
             return None
         return user

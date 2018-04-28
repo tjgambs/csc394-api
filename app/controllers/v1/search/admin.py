@@ -64,11 +64,11 @@ def get_accounts():
     )
 
 
-@MOD.route("/delete_account/<id>", methods=["DELETE"])
+@MOD.route("/delete_account/<email>", methods=["DELETE"])
 @auth.login_required
 @admin_access([2])
-def delete_account(id):
-    acc = db.session.query(User).filter_by(id=id).first()
+def delete_account(email):
+    acc = db.session.query(User).filter_by(email=email).first()
     message = "FAILURE"
     if acc:
         acc.delete()
