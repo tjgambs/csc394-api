@@ -1,3 +1,5 @@
+# TODO: Find actual course_IDs for required courses and add them to appropriate sets
+
 # This section creates a Curriculum object for the Computer Science master's program.
 # CourseID numbers that satisfy specific class types in a curriculum. The following sets will allow the search to recognize the type of class it is looking at in order to properly count totals for goal checking
 csIntros = {34213, 34215, 34278, 34218, 34220, 34575}

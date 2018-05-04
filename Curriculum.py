@@ -1,5 +1,5 @@
 class Curriculum:
-    'class represents a degree. Allows courses to be assigned to particular subtypes. This will be used in goal checking.'
+    'class represents a degree. Allows courses to be assigned to particular subtypes. Used in goal checking.'
 
     def __init__(self, courseTypeDesignations, reqs):
         self.introductory_courses = courseTypeDesignations[0]
