@@ -1,7 +1,8 @@
 class Curriculum:
-    'class represents a degree. Allows courses to be assigned to particular subtypes. Used in goal checking.'
+    """class represents a degree. Allows courses to be assigned to particular subtypes. Used in goal checking."""
 
     def __init__(self, courseTypeDesignations, reqs):
+        self.courseTypeDesignations = courseTypeDesignations
         self.introductory_courses = courseTypeDesignations[0]
         self.foundation_courses = courseTypeDesignations[1]
         self.major_elective_courses = courseTypeDesignations[2]
@@ -19,6 +20,7 @@ class Curriculum:
         self.gradReqs = reqs
 
 
+    courseTypeDesignations = list()
     # Sets of courseID numbers that will count for a particular type of course
     introductory_courses = set()
     foundation_courses = set()

@@ -1,5 +1,5 @@
 class Plan:
-    'class that represents a curriculum at a particular point during search'
+    """class that represents a curriculum at a particular point during search."""
 
     def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses):
         self.selectionOrder = selectionOrder
@@ -16,9 +16,16 @@ class Plan:
     typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 
+    # Adds given course to the current plans term. If no course is available then it leaves the term partially empty
+    # if something else has already been added tothe term, or creates an empty term if no courses were available.
+    # Once the term is full or options are exhausted it advances termNum
     def addCourse(self, course):
-        if len(self.selectionOrder[self.termNum]) < self.maxCourses:
+        if len(self.selectionOrder[self.termNum]) < self.maxCourses and course != list():
             self.selectionOrder[self.termNum].append(course)
+            self.coursesTaken.add(course)
+        elif len(self.sectionOrder[self.termNum]) < self.maxCourses and course == list():
+            self.selectionOrder[self.termNum].append(course)
+            self.termNum = self.termNum + 1
         else:
             self.selectionOrder.append(list(course))
             self.termNum = self.termNum + 1             # modify it to match how the database handles it
