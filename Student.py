@@ -10,7 +10,7 @@ class Student(object):
 
 
     def addCourse(self, Course_ID):
-        self.courses_taken.append(Course_ID)
+        self.courses_taken.add(Course_ID)
 
     def deleteCourse(self, Delete_Course_ID):
         list = self.courses_taken
@@ -35,4 +35,7 @@ class Student(object):
 
     def getPreviousprogram(self):
         return Student.previous_program
+
+    def getGradReqs(self):
+
 
