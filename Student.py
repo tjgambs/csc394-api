@@ -1,5 +1,5 @@
 class Student(object):
-    previourprogram = ''
+    previous_program = ''
     def __init__(self, student_id, number_of_classes_per_quarter, courses_taken, current_quarter, program, elective_preference):
        self.student_id = student_id
        self.number_of_classes_per_quarter = number_of_classes_per_quarter
