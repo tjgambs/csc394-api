@@ -11,5 +11,3 @@ class DegreeBuilder:
         search.automated(self, Student)
 
     def manualSearch(self):
-
-ubfwauhfwaiohwafiohawsfihoasfiohfsaiohsfahioasdfioh
