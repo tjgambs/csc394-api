@@ -36,6 +36,4 @@ class Student(object):
     def getPreviousprogram(self):
         return Student.previous_program
 
-    def getGradReqs(self):
-
 
