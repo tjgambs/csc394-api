@@ -1,6 +1,6 @@
 
 
-    - student_ID: Whenever we are referring to a student identifcation we refer to it as "Student_ID". Type: INT.
+    - student_ID: Whenever we are referring to a student identification we refer to it as "Student_ID". Type: INT.
 
     - number_of_classes_per_quarter: This is the number of courses that a student wishes to take in a given quarter. Type: INT.
 
@@ -15,7 +15,7 @@
 
     - program: The determines the program that the User is currently in.
                     Key:
-                    10 - ComputerScience
+                    10 - Computer Science
                     20 - Information Systems: Standard Concentration
                     21 - Information Systems: Business Analysis/Systems Analysis
                     22 - Information Systems: Business Intelligence

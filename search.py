@@ -10,17 +10,18 @@ def heuristics(course, suggestedPlan, student):
     unlocks = course.getH2
     bonus = 0
 
-    if suggestedPlan.typesTaken[2] < student.program.gradReqs[2]:           # If the student needs more electives
+    if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:           # If the student needs more electives
         studentPref = student.elective_preference
-        if course in student.program.courseTypeDesignation[studentPref]:    # Add bonus if course is preferred
+        if course in student.curriculum.courseTypeDesignation[studentPref]:    # Add bonus if course is preferred
             bonus += 5
 
         # If the course is a member of the students most frequently taken elective course type and the student has not
         # met the minimum number of courses from a single concentration requirement, add a weight
-        for i in range (5, 13):
-            electivesCount = electivesCount.append(suggestedPlan.typesTaken[i])
-        if max(electivesCount) < student.program.gradReqs[5]:
-            if course in student.program.courseTypeDesignation[electivesCount.index(max())]:
+        electivesCount = ()
+        for i in range(5, 13):
+            electivesCount.append(suggestedPlan.typesTaken[i])
+        if max(electivesCount) < student.curriculum.gradReqs[5]:
+            if course in student.curriculum.courseTypeDesignation[electivesCount.index(max())]:
                 bonus += 5
     return rarity + unlocks + bonus
 
@@ -37,6 +38,10 @@ def isGoal(plan, curriculum):
                 return True
     else:
         return False
+
+
+def getOptions(curriculum, plan):
+    return (0,0,0,0,0,0)
 
 def automated(student):
     """Takes a student object and generates the shortest path to graduation. """
@@ -65,7 +70,7 @@ def automated(student):
 
     maxCourses = student.number_of_classes_per_quarter
     start = Plan(list(), student.courses_taken, student.current_quarter, maxCourses)
-    program = student.program
+    curriculum = student.curriculum
     frontier = PriorityQueue()
     frontier.put(start, 0)
     cameFrom = {}
@@ -77,14 +82,15 @@ def automated(student):
     while not frontier.empty():
         current = frontier.get()
 
-        if isGoal(current, program):
+        if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in getOptions:              # TODO: getOptions will be the database query
+        for suggestedCourse in getOptions(student.curriculum, current):   # TODO: getOptions will be the database query
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
             suggestedPlan.addCourse(suggestedCourse)
+            # TODO: Update coursesTaken to account for added course
 
             if suggestedPlan not in costSoFar or new_cost < costSoFar[suggestedPlan]:
                 costSoFar[suggestedPlan] = new_cost
