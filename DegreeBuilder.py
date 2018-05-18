@@ -1,18 +1,26 @@
 import search
-from GetOptions import GetOptions
-class DegreeBuilder:
-    def __init__(self, Student, search_type):
-        self.Student = Student
-        self.search_type = search_type
+import GetOptions
+import serialization
 
-    def runDegree(self):
-        if self.search_type == 0:
-           return self.automatedSearch(self.Student)
-        else:
-            return self.manualSearch()
+'''
+This runs the degree Builder. In order the following will occur:
+1. The JSON payload passed from the front end will be deserialized into a student object.
+2. The option type from the student object will be checked. If it is a:
+        0 - automated search
+        1 - manual search
+3. The option type method will be called.
+4. The method will return a serialized JSON of courses
 
-    def automatedSearch(self):
-        search.automated(self)
+'''
+def runDegree(self):
+    student_object = serialization.deserializeForStudent(self)
+    if student_object.option_type == 0:
+        return automatedSearch(student_object)
+    else:
+        return manualSearch(student_object)
 
-    def manualSearch(self):
-        return GetOptions.runQuery(self)
+def automatedSearch(self):
+    search.automated(self)
+
+def manualSearch(self):
+    return GetOptions.runQuery(self)

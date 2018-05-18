@@ -10,7 +10,8 @@
 
     - option_type: The User sets this to have the Automated of Manual modes activated.
                     Key:
-                    0 - Automated / 1 - Manual.
+                    0 - Automated
+                    1 - Manual
                 Type: INT
 
     - program: The determines the program that the User is currently in.
