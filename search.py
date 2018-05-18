@@ -18,7 +18,7 @@ def heuristics(course, suggestedPlan, student):
         # If the course is a member of the students most frequently taken elective course type and the student has not
         # met the minimum number of courses from a single concentration requirement, add a weight
         electivesCount = ()
-        for i in range(5, 13):
+        for i in range(5, len(student.curriculum.courseTypeDesignations) + 1):#13):
             electivesCount.append(suggestedPlan.typesTaken[i])
         if max(electivesCount) < student.curriculum.gradReqs[5]:
             if course in student.curriculum.courseTypeDesignation[electivesCount.index(max())]:
@@ -85,7 +85,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in getOptions(student.curriculum, current):   # TODO: getOptions will be the database query
+        for suggestedCourse in GetOptions(student.curriculum, current):   # TODO: getOptions will be the database query
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)

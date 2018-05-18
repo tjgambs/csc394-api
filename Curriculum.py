@@ -45,6 +45,6 @@ class Curriculum:
         (human_computer_interaction_courses).union(capstone_courses))
 
 
-    # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
-    # from a single concentration required for graduation
-    gradReqs = [0, 0, 0, 0, 0, 0]
+    # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses from a
+    # single concentration, and advanced courses required for graduation
+    gradReqs = [0, 0, 0, 0, 0, 0, 0]
