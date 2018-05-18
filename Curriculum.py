@@ -36,5 +36,15 @@ class Curriculum:
     human_computer_interaction_courses = set()
     capstone_courses = set()
 
-    # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses from a single concentration required for graduation
+
+    #All courses included in this curriculum
+    coursesInCurriculum = introductory_courses.union(foundation_courses).union(major_elective_courses).union\
+        (open_elective_courses).union(software_systems_dev_courses).union(theory_courses.union\
+        (data_science_courses).union(database_systems_courses).union(ai_courses).union\
+        (software_engineering_courses).union(game_and_real_time_systems_courses).union\
+        (human_computer_interaction_courses).union(capstone_courses))
+
+
+    # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
+    # from a single concentration required for graduation
     gradReqs = [0, 0, 0, 0, 0, 0]

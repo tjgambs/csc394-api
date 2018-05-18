@@ -23,7 +23,7 @@ csHumCompInts = {csc436, csc438, csc465, csc471, csc472, 34690, csc492, 34167, h
 csCourseDesignations = [csIntros, csFoundations, csMajElects, csOpenElects, csSoftDevs, csTheory, csDataScis,
                         csDatabases, csAIs, csSoftEngs, csGameRTSys, csHumCompInts]
 csCapstones = set()
-csMajElects = csSoftDevs | csTheorys | csDataScis | csDatabases | csAIs | csSoftEngs | csGameRTSys | csHumCompInts
+csMajElects = csSoftDevs.union(csTheorys).union(csDataScis).union(csDatabases).untion(csAIs).union(csSoftEngs).union(csGameRTSys).union(csHumCompInts)
 csGradReqs = [6, 5, 8, 0, 0, 4]
 
 CS = Curriculum(csCourseDesignations, csGradReqs)

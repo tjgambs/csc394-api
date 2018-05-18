@@ -17,7 +17,7 @@ class Plan:
 
 
     # Adds given course to the current plans term. If no course is available then it leaves the term partially empty
-    # if something else has already been added tothe term, or creates an empty term if no courses were available.
+    # if something else has already been added to the term, or creates an empty term if no courses were available.
     # Once the term is full or options are exhausted it advances termNum
     def addCourse(self, course):
         if len(self.selectionOrder[self.termNum]) < self.maxCourses and course != list():
@@ -41,6 +41,6 @@ class Plan:
     # 7:  Data Science Courses
     # 8:  Database Systems Courses
     # 9:  AI Courses
-    # 10:  Software Engineering Courses
+    # 10: Software Engineering Courses
     # 11: Game and Real-Time Systems Courses
     # 12: Human-Computer Interaction Courses
