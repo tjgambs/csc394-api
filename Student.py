@@ -1,5 +1,12 @@
 class Student(object):
     previous_program = ''
+
+    # Initial Creation of the Student Object. It will have the following:
+    #   - Student ID Number
+    #   - Number of classes desired to take per Quarter
+    #   - A set of courses taken
+    #   - The Program that the student is in.
+    #   - The elective references that hte student wants to take.
     def __init__(self, student_id, number_of_classes_per_quarter, courses_taken, current_quarter, program, elective_preference):
        self.student_id = student_id
        self.number_of_classes_per_quarter = number_of_classes_per_quarter
@@ -35,5 +42,4 @@ class Student(object):
 
     def getPreviousprogram(self):
         return Student.previous_program
-
 

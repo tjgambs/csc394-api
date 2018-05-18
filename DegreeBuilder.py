@@ -1,5 +1,5 @@
 import search
-from ManualOptionQuery import ManualOptionQuery
+from GetOptions import GetOptions
 class DegreeBuilder:
     def __init__(self, Student, search_type):
         self.Student = Student
@@ -15,4 +15,4 @@ class DegreeBuilder:
         search.automated(self)
 
     def manualSearch(self):
-        return ManualOptionQuery.runQuery(self)
+        return GetOptions.runQuery(self)
