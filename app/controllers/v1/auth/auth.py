@@ -87,12 +87,28 @@ def update_user():
     email = request.json.get('email')
     first_name = request.json.get('first_name')
     last_name = request.json.get('last_name')
-    if email is None or first_name is None or last_name is None:
+    undergraduate_degree = request.json.get('undergraduate_degree')
+    graduate_degree = request.json.get('graduate_degree')
+    automation = request.json.get('automation')
+    graduate_degree_concentration = request.json.get(
+        'graduate_degree_concentration')
+    elective = request.json.get('elective')
+    number_credit_hours = request.json.get('number_credit_hours')
+
+    not_null = [email, first_name, last_name, undergraduate_degree, graduate_degree,
+                automation, graduate_degree_concentration, elective, number_credit_hours]
+    if any(n is None for n in not_null): 
         abort(400)
 
     g.user.email = email
     g.user.first_name = first_name
     g.user.last_name = last_name
+    g.user.undergraduate_degree = undergraduate_degree
+    g.user.graduate_degree = graduate_degree
+    g.user.automation = automation
+    g.user.graduate_degree_concentration = graduate_degree_concentration
+    g.user.elective = elective
+    g.user.number_credit_hours = number_credit_hours
     db.session.commit()
 
     return jsonify(

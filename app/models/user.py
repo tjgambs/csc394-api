@@ -15,6 +15,13 @@ class User(db.Model):
     first_name = db.Column(db.String())
     last_name = db.Column(db.String())
     account_type = db.Column(db.Integer())
+    undergraduate_degree = db.Column(db.String())
+    graduate_degree = db.Column(db.String())
+    automation = db.Column(db.String())
+    graduate_degree_concentration = db.Column(db.String())
+    elective = db.Column(db.String())
+    number_credit_hours = db.Column(db.String())
+
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -44,7 +51,13 @@ class User(db.Model):
             'token': self.token,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'account_type': self.account_type_string
+            'account_type': self.account_type_string,
+            'undergraduate_degree': self.undergraduate_degree,
+            'graduate_degree': self.graduate_degree,
+            'automation': self.automation,
+            'graduate_degree_concentration': self.graduate_degree_concentration,
+            'elective': self.elective,
+            'number_credit_hours': self.number_credit_hours
         }
 
     @staticmethod
