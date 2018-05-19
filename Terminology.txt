@@ -6,7 +6,7 @@
 
     - courses_taken: This a list of the course id's that the student has already taken. Type: SET
 
-    - current_quarter: This is a holder for the current quarter. TODO: TYPE: NO TYPE SELECTED YET
+    - current_quarter: This is a holder for the current quarter. Type: INT
 
     - option_type: The User sets this to have the Automated of Manual modes activated.
                     Key:
