@@ -1,6 +1,13 @@
-class GetOptions:
+import serialization
 
-    # This class   will preform enable a query search in the Database.
-    # The results then can be filtered after this.
-    def __init__(self, Student):
-        self.Student = Student
+
+'''
+This will run a query to then return classes to the 
+'''
+def runQuery(StudentObject):
+    print("Running Query")
+    # TODO: Delete the code below. Used only for a TEST
+    list = ["TEST", "LIST", "123", "$%^"]
+    j = serialization.classListSerialize(list)
+    return j
+    # TODO: ^^^^^ END of delete segment ^^^^^
