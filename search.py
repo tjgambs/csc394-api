@@ -1,6 +1,8 @@
 from queue import PriorityQueue
 import Plan
 import Student
+import GetOptions
+
 
 def heuristics(course, suggestedPlan, student):
     """ Assigns a score to the coursePlan based on the rarity of the course, the number of courses this one makes
@@ -40,8 +42,9 @@ def isGoal(plan, curriculum):
         return False
 
 
-def getOptions(curriculum, plan):
-    return (0,0,0,0,0,0)
+def classifyCourse (course, curriculum):
+    for typ
+
 
 def automated(student):
     """Takes a student object and generates the shortest path to graduation. """
@@ -85,7 +88,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in getOptions(student.curriculum, current):   # TODO: getOptions will be the database query
+        for suggestedCourse in GetOptions(student.curriculum, current):   # TODO: getOptions will be the database query
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)

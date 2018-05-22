@@ -1,22 +1,24 @@
+# def pruneByPrereq (listFromQuery, coursesTakenInPlan):
+#     reachableCourses = ()
+#     canReach = True
+#
+#     for course in listFromQuery:
+#         canReach = True
+#         preReqs = course[5]
+#         for pre in preReqs:
+#             if type(pre) is list:
+#                 for prereqOptions in pre:
+#                     if pre not in coursesTakenInPlan:
+#                         canReach = False
+#             else:
+#                 if pre not in coursesTakenInPlan:
+#                     canReach = False
+#
+#         if canReach is True:
+#             reachableCourses.append(course)
+#     return reachableCourses
+
 def pruneByPrereq (listFromQuery, coursesTakenInPlan):
-    reachableCourses = ()
-    canReach = True
-
-    for course in listFromQuery:
-        canReach = True
-        preReqs = course[5]
-        for pre in preReqs:
-            if type(pre) is list:
-                for prereqOptions in pre:
-                    if pre not in coursesTakenInPlan:
-                        canReach = False
-            else:
-                if pre not in coursesTakenInPlan:
-                    canReach = False
-
-        if canReach is True:
-            reachableCourses.append(course)
-    return reachableCourses
 
 
 # Removes courses from the query results that collide with another course taken
