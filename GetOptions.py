@@ -25,21 +25,25 @@ def runQuery(StudentObject):
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     #TODO: Add the score when that has been placed into the DataBase
-    cur.execute("SELECT c.subject, c.course_nbr, d.day  FROM csc394_courses c \
+    cur.execute("SELECT c.subject, c.course_nbr, d.day, c.score, c.prereqs FROM csc394_courses c \
     INNER JOIN days_offered d ON (c.subject = d.subject AND c.course_nbr = d.catalog_nbr ) \
-    WHERE d.stream = '0975' ORDER BY course_nbr")
+    WHERE d.stream = '0975' ORDER BY score DESC")
     #TODO: ^^^^ Replace '0975' with %s and add , (va) at the end ^^^^
     row = cur.fetchone()
 
     i = 0
+    array = []
+    classes = set()
     while row is not None:
         subject = row[0]
         course_nbr = row[1]
         day = row[2]
+        score = row[3]
+        pre = row[4]
         i = i + 1
-        print(i,". ", subject, " ", course_nbr, " ", day )
+        print(i,". ", subject, " ", course_nbr, " ", day , " ", score , " ", pre )
         row = cur.fetchone()
     cur.close()
 
 
-    return None
+    return array
