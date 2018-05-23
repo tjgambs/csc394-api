@@ -4,9 +4,9 @@
 
     - number_of_classes_per_quarter: This is the number of courses that a student wishes to take in a given quarter. Type: INT.
 
-    - courses_taken: This a list of the course id's that the student has already taken. Type: SET
+    - coursesTaken: This a list of the course id's that the student has already taken. Type: SET
 
-    - current_quarter: This is a holder for the current quarter. Type: INT
+    - termNum: This is a holder for the current quarter. Type: INT
 
     - option_type: The User sets this to have the Automated of Manual modes activated.
                     Key:
