@@ -89,7 +89,7 @@ def automated(student):
     # 42 which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes will
     # appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it will be
     # admissible. As long as unlocks is less than 16 we will never have negative costs therefore h(n) will be considered
-    # consistent.
+    # consistent  .
 
     maxCourses = student.number_of_classes_per_quarter
     start = Plan(list(), student.courses_taken, student.current_quarter, maxCourses)
