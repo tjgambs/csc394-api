@@ -1,4 +1,4 @@
-import getCourseStr
+import getCourseStr as gCS
 
 
 class Plan:
@@ -6,28 +6,29 @@ class Plan:
 
     def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
-        self.coursesTaken = coursesTaken                # # Set of strings representing courses taken.  'csc300'
+        self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
         self.termNum = termNum                          # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
         self.currTermIdx = len(selectionOrder)          # Stores index of the current term we are preparing
 
-    # Count of each type of course taken at this point in the plan. Used for goal checking.
-    # Each index represents a type of course. Stores the int num of that type taken
-    # Indexes correspond to the following course types
-    # 0:  Introductory Courses
-    # 1:  Foundation Courses
-    # 2:  Major Elective Courses
-    # 3:  Open Elective Courses
-    # 4:  Capstone Courses
-    # 5:  Software Systems Development Courses
-    # 6:  Theory Courses
-    # 7:  Data Science Courses
-    # 8:  Database Systems Courses
-    # 9:  AI Courses
-    # 10: Software Engineering Courses
-    # 11: Game and Real-Time Systems Courses
-    # 12: Human-Computer Interaction Courses
-    # 13: Advanced Courses
+        # Count of each type of course taken at this point in the plan. Used for goal checking.
+        # Each index represents a type of course. Stores the int num of that type taken
+        # Indexes correspond to the following course types
+        # 0:  Introductory Courses
+        # 1:  Foundation Courses
+        # 2:  Major Elective Courses
+        # 3:  Open Elective Courses
+        # 4:  Capstone Courses
+        # 5:  Software Systems Development Courses
+        # 6:  Theory Courses
+        # 7:  Data Science Courses
+        # 8:  Database Systems Courses
+        # 9:  AI Courses
+        # 10: Software Engineering Courses
+        # 11: Game and Real-Time Systems Courses
+        # 12: Human-Computer Interaction Courses
+        # 13: Advanced Courses
+
         self.typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     # Adds given course to the current plans term. If no course is available, then it leaves the term partially empty
@@ -37,7 +38,7 @@ class Plan:
 
         # There is room for a class and we have been handed a class
         if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course != list():
-            courseStr = getCourseStr(course)
+            courseStr = gCS.getCourseStr(course)
             self.selectionOrder[self.currTermIdx].append(courseStr)
             self.coursesTaken.add(courseStr)
 

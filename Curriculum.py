@@ -25,7 +25,7 @@ class Curriculum:
         courseTypeDesignations = list()
 
 
-        # Sets of courseID numbers that will count for a particular type of course
+        # Sets of course names that will count for a particular type of course
         introductory_courses = set()
         foundation_courses = set()
         major_elective_courses = set()
@@ -52,4 +52,5 @@ class Curriculum:
 
         # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
         # from a single concentration required for graduation, and advanced_courses
+
         gradReqs = [0, 0, 0, 0, 0, 0, 0]
