@@ -1,7 +1,9 @@
 from queue import PriorityQueue
 import Plan
 import Student
+import Curriculum
 import GetOptions
+import getCourseString
 
 
 def heuristics(course, suggestedPlan, student):
@@ -12,9 +14,10 @@ def heuristics(course, suggestedPlan, student):
     unlocks = course.getH2
     bonus = 0
 
-    if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:           # If the student needs more electives
+    if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:            # If student needs more electives
         studentPref = student.elective_preference
-        if course in student.curriculum.courseTypeDesignation[studentPref]:    # Add bonus if course is preferred
+        courseStr = getCourseString(course)
+        if courseStr in student.curriculum.courseTypeDesignation[studentPref]:  # Add bonus if course is preferred
             bonus += 5
 
         # If the course is a member of the students most frequently taken elective course type and the student has not
@@ -28,12 +31,14 @@ def heuristics(course, suggestedPlan, student):
     return rarity + unlocks + bonus
 
 
+# Determines if the current plan is a goal state
 def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken \
         and curriculum.foundation_courses   <= plan.coursesTaken \
         and curriculum.gradReqs[2]          <= plan.typesTaken[2] \
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
-        and curriculum.gradReqs[4]          <= plan.typesTaken[4]:
+        and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
+        and curriculum.gradReqs[6]          <= plan.typesTaken[13]:
 
         for i in range(5, len(plan.typesTaken)):
             if curriculum.gradReqs[5]       <= plan.typesTaken[i]:
@@ -42,8 +47,23 @@ def isGoal(plan, curriculum):
         return False
 
 
+# Determines which categories given course satisfies in a given curriculum.
 def classifyCourse (course, curriculum):
-    for typ
+    courseStr = getCourseString(course)
+    courseType = list()
+
+    for i in range (0, len(curriculum.courseTypeDesignations)):
+        if courseStr in curriculum.courseTypeDesignations[i]:
+            courseType.append(i)
+
+    return courseType
+
+
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
+# from a single concentration required for graduation
+# Credit the earliest bucket. If those are full then look at the elective buckets with the max courses taken and credit
+# that elective bucket
+#def incrCourseType
 
 
 def automated(student):
@@ -88,7 +108,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in GetOptions(student.curriculum, current):   # TODO: getOptions will be the database query
+        for suggestedCourse in GetOptions(student.curriculum, current):
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
