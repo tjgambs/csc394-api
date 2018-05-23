@@ -21,7 +21,7 @@ class Curriculum:
         self.gradReqs = reqs
 
 
-        # List of all the course types (each index contains all the courses that are of this type)
+        # List of all the course types (each index contains all the courses that are of this type )
         courseTypeDesignations = list()
 
 
