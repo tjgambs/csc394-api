@@ -9,8 +9,8 @@ def classListSerialize(classList):
 def deserializeForStudent(studentInfo):
     print("DE-SERIALIZING.......")
     data = json.loads(studentInfo)
-    student_object = Student(data['student_id'], data['number_of_classes_per_quarter'], data['courses_taken']\
-        , data['current_quarter'], data['curriculum'], data['elective_preference'], data['option_type'])
+    student_object = Student(data['student_id'], data['number_of_classes_per_quarter'], data['coursesTaken']\
+        , data['numTerm'], data['curriculum'], data['elective_preference'], data['option_type'])
     return student_object
 
 
