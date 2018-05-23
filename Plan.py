@@ -1,4 +1,4 @@
-import getCourseString
+import getCourseStr
 
 
 class Plan:
@@ -9,8 +9,7 @@ class Plan:
         self.coursesTaken = coursesTaken                # # Set of strings representing courses taken.  'csc300'
         self.termNum = termNum                          # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
-
-    currTermIdx = len(selectionOrder)                   # Stores index of the current term we are preparing
+        self.currTermIdx = len(selectionOrder)          # Stores index of the current term we are preparing
 
     # Count of each type of course taken at this point in the plan. Used for goal checking.
     # Each index represents a type of course. Stores the int num of that type taken
@@ -29,7 +28,7 @@ class Plan:
     # 11: Game and Real-Time Systems Courses
     # 12: Human-Computer Interaction Courses
     # 13: Advanced Courses
-    typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     # Adds given course to the current plans term. If no course is available, then it leaves the term partially empty
     # if something else has been added to the term. If no options are available it instead creates an empty term.
@@ -37,14 +36,14 @@ class Plan:
     def addCourse(self, course):
 
         # There is room for a class and we have been handed a class
-        if len(self.selectionOrder[currTermIdx]) < self.maxCourses and course != list():
-            courseStr = getCourseString(course)
-            self.selectionOrder[currTermIdx].append(courseStr)
+        if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course != list():
+            courseStr = getCourseStr(course)
+            self.selectionOrder[self.currTermIdx].append(courseStr)
             self.coursesTaken.add(courseStr)
 
         # There is room for a class but no classes are available. Advance to next term number
-        elif len(self.selectionOrder[currTermIdx]) < self.maxCourses and course == list():
-            self.selectionOrder[currTermIdx].append(course)
+        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course == list():
+            self.selectionOrder[self.currTermIdx].append(course)
             self.termNum = self.termNum + 5
 
         # There isn't room for another class. Advance to next term.

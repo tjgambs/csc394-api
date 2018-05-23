@@ -12,7 +12,7 @@ def runQuery(planStudent):
 #1020 Maximum Quarter Number
 
     quarter_range = 45
-    student_quarter = planStudent #planStudent.termNum
+    student_quarter = int(planStudent.termNum)
     if student_quarter <= 1020:
         quarter = student_quarter
     else:
@@ -43,9 +43,9 @@ def runQuery(planStudent):
     while row is not None:
 
         subject = row[0]
-        classes.append(subject)
+        #classes.append(subject)
         course_nbr = row[1]
-        classes.append(course_nbr)
+        classes.append(subject.lower() + " " + str(course_nbr))
         day = row[2]
         classes.append(day)
         score = row[3]

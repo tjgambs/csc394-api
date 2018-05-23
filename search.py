@@ -2,8 +2,8 @@ from queue import PriorityQueue
 import Plan
 import Student
 import Curriculum
-import GetOptions
-import getCourseString
+import getOptions
+import getCourseStr as gCS
 
 
 def heuristics(course, suggestedPlan, student):
@@ -16,7 +16,7 @@ def heuristics(course, suggestedPlan, student):
 
     if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:            # If student needs more electives
         studentPref = student.elective_preference
-        courseStr = getCourseString(course)
+        courseStr = gCS.getCourseStr(course)
         if courseStr in student.curriculum.courseTypeDesignation[studentPref]:  # Add bonus if course is preferred
             bonus += 5
 
@@ -49,7 +49,7 @@ def isGoal(plan, curriculum):
 
 # Determines which categories given course satisfies in a given curriculum.
 def classifyCourse (course, curriculum):
-    courseStr = getCourseString(course)
+    courseStr = gCS.getCourseStr(course)
     courseType = list()
 
     for i in range (0, len(curriculum.courseTypeDesignations)):
@@ -108,7 +108,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in GetOptions(student.curriculum, current):
+        for suggestedCourse in getOptions(student.curriculum, current):
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
