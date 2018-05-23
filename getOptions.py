@@ -1,6 +1,7 @@
 import serialization
 import Student
 import psycopg2
+import ast
 
 
 '''
@@ -43,15 +44,16 @@ def runQuery(planStudent):
     while row is not None:
 
         subject = row[0]
-        classes.append(subject)
+        #classes.append(subject)
         course_nbr = row[1]
-        classes.append(course_nbr)
+        classes.append(subject + " " + str(course_nbr))
         day = row[2]
         classes.append(day)
         score = row[3]
         classes.append(score)
         pre = row[4]
         classes.append(pre)
+        parseString(pre)
         row = cur.fetchone()
         array.append(classes)
         classes = []
@@ -59,3 +61,25 @@ def runQuery(planStudent):
 
 
     return array
+
+def parseString (string):
+    string = "([CSC 453, CSC 451, CSC 455], [CSC 401, IT 411])"
+    for index in range(len(string)):
+
+
+
+
+
+
+'''
+string = string.lower().split("[]")
+string = string[0].split("()")
+string = string[0].split(",")
+string = string[0].split("[]")
+string = string[0].split(",")
+
+for index in range(len(string)):
+    if string.startswith("[", index , len(string)):
+        print("true")'''
+
+# print(list)

@@ -24,6 +24,6 @@ def automatedSearch(self):
 
 def manualSearch(self):
     day_to_prune = "none"
-    list.append(generateOptions.generatOptions(self, day_to_prune, self.curriculum))
+    list.append(generateOptions.generateOptions(self, day_to_prune, self.curriculum))
     results = serialization.classListSerialize(list)
     return results
