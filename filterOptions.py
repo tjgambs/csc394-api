@@ -8,6 +8,7 @@ import getCourseStr as gCS
 # Thank you Anthony
 
 #  TODO: Erik has a function that does this already replace this with it
+# TODO: starting to use class_tree to get properly formatted preReqs for the filter.
 def parseString(string):
     new_string = ''
     old_i = ''
