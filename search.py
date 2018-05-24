@@ -5,6 +5,7 @@ import Curriculum
 import getOptions
 import getCourseStr as gCS
 
+# JP
 # =====================================================================================================================
 def heuristics(course, suggestedPlan, student):
     """ Assigns a score to the coursePlan based on the rarity of the course, the number of courses this one makes

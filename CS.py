@@ -1,5 +1,6 @@
 import Curriculum
 
+# JP
 # This section creates a Curriculum object for the Computer Science master's program.
 # Course names that satisfy specific class types in a curriculum. The following sets will allow the search to recognize
 # the type of class it is looking at in order to properly count totals for goal checking

@@ -1,6 +1,7 @@
 import getCourseStr as gCS
 
 
+# JP
 class Plan:
     """class that represents a curriculum at a particular point during search."""
 

@@ -1,3 +1,5 @@
+# JP
+
 class Curriculum:
     """class represents a degree. Allows courses to be assigned to particular subtypes. Used in goal checking."""
 

@@ -1,6 +1,6 @@
 import getCourseStr as gCS
 
-
+# JP
 # =====================================================================================================================
 # Filter potential courses leaving only courses whose prerequisites are met
 
@@ -116,10 +116,10 @@ def pruneOffDay(listFromQuery, dayToPrune):
         return listFromQuery
 
     for course in listFromQuery:
-        if course[2] == 'online':                               # If courses day of week is online
+        if course[1] == 'OnLine':                               # If courses day of week is online      TODO: Verify that the index is where day offered is stored
             prunedList.append(course)                           # Can always include online courses
 
-        if course[2] != dayToPrune:                             # If courses day of the week isn't dayToPrune
+        if course[1] != dayToPrune:                             # If courses day of the week isn't dayToPrune
             prunedList.append(course)
 
     return prunedList
@@ -131,7 +131,7 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
 
     for course in listFromQuery:
-        courseStr = gCS.getCourseStr(course)
+        courseStr = gCS.getCourseStr(course)                    # TODO: See about not using getCourseStr if data allows
 
         if courseStr not in coursesTaken:
             prunedList.append(course)
@@ -145,7 +145,7 @@ def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
 
     for course in range (len(listFromQuery)):
-        courseStr = gCS.getCourseStr(listFromQuery[course])
+        courseStr = gCS.getCourseStr(listFromQuery[course])     # TODO: See about not using getCourseStr if data allows
 
         if courseStr in curriculum.coursesInCurriculum:
             prunedList.append(listFromQuery[course])

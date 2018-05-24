@@ -1,5 +1,6 @@
 import Curriculum
 
+# JP
 # This section creates a Curriculum object for the IS master's program with the
 # Business Intelligence Concentration.
 
