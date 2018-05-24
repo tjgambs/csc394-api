@@ -31,16 +31,15 @@ def orTrue (orPreReqs, coursesTaken):
     for i in range(len(preReqs)):
 
         if type(preReqs[i]) is list:                            # 'OR' separated prerequisites
-            if orTrue(preReqs[i]):                              # Something in 'OR' is present
+            if orTrue(preReqs[i], coursesTaken):                # Something in 'OR' is present
                 return True                                     # orPreReqs satisfies requirements
 
         elif type(preReqs[i]) is tuple:                         # 'AND' separated prerequisites
-            if andTrue(preReqs[i]):                             # Everything in 'AND' is present
+            if andTrue(preReqs[i], coursesTaken):               # Everything in 'AND' is present
                 return True                                     # orPreReqs satisfies requirements
 
         else:
-            courseStr = gCS.getCourseStr(preReqs[i])
-            if courseStr in coursesTaken:                       # Individual prereq present
+            if preReqs[i] in coursesTaken:                      # Individual prereq present
                 return True                                     # Report able to qualify for this course
 
     return False                                                # No element in 'OR' present. Unable to qualify
@@ -61,8 +60,7 @@ def andTrue(andPreReqs, coursesTaken):
                 return False                                    # andPreReqs doesn't satisfy requirements
 
         else:
-            courseStr = gCS.getCourseStr(preReqs[i])
-            if courseStr not in coursesTaken:                   # Individual prereq present
+            if preReqs[i] not in coursesTaken:                  # Individual prereq present
                 return False                                    # Report able to qualify for this course
 
     return True                                                 # Every element in 'AND' present. Able to qualify
@@ -77,9 +75,9 @@ def pruneByPrereq (listFromQuery, coursesTaken):
         canReach = True                                         # Tracks if the student has all needed prerequisites
         row = listFromQuery[course]
         preReqs = list()
-        if row[3] != None:
+        if row[3] != list():
             preReqs = row[3]                                    # Index of prereqs column of course
-            preReqs = parseString(preReqs)                      # Convert the string into parsed format
+            # preReqs = parseString(preReqs)                      # Convert the string into parsed format TODO: uncomment this once parser works
 
         if type(preReqs) != list():                             # If not the empty list
             for i in range(len(preReqs)):                       # For each item in preReqs
@@ -128,7 +126,7 @@ def pruneOffDay(listFromQuery, dayToPrune):
 # =====================================================================================================================
 
 # =====================================================================================================================
-# Removes courses from the query result that the student has already taken.
+# Removes courses from the query result that the student has already taken. Expects a list of rows from query
 def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
 
@@ -142,7 +140,7 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
 # =====================================================================================================================
 
 # =====================================================================================================================
-# Removes courses from the query not present in given curriculum.
+# Removes courses from the query not present in given curriculum. Expects a list of rows from query
 def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
 

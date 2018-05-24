@@ -74,9 +74,10 @@ gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
 # create the curriculum from data above
 csCurriculum = Curriculum(courseDesignations, gradReqs)
-
+'''
 print('cs1:')
 print(csCurriculum.introductory_courses)
+'''
 '''
 print('Next line should be true')
 print('csc 400' in csCurriculum.introductory_courses)
@@ -87,8 +88,10 @@ print('se 477' in csCurriculum.coursesInCurriculum)
 
 # create the curriculum from the CS class
 cs2 = defineCurriculum()
+'''
 print('cs2:')
 print(cs2.introductory_courses)
+'''
 #=======================================================================================================================
 # Create the student
 the_student_obj = Student.Student("123Test", 1, ["csc 401", "csc 400"], 990, csCurriculum, 5, 0)
@@ -102,3 +105,17 @@ print(the_student_obj.coursesTaken)
 # generateOptions.generateOptions(the_student_obj, 'mon', csCurriculum)
 # Currently is crashing because the parsing isn't quite correct. It gets this: File "<string>", line 1
 #     ['('CSC 406', CSC 402')]    It is currently missing the ' before CSC 402
+
+#=======================================================================================================================
+courses = [['csc 400', 'mon', 42, []], ['csc 401', 'OnLine', 20, ['csc 400']], ['csc 444', 'tues', 10, ['csc 400', 'csc 401']], ['is 500', 'thurs', 30, [['csc 500', ('csc 400', 'csc 402')]]]]
+'''
+pruned_by_curriculum = filterOptions.pruneByCurriculum(prerequisites, cs2)
+print (pruned_by_curriculum)
+'''
+'''
+pruned_by_PrevCourses = filterOptions.pruneOffPrevCourses(courses, the_student_obj.coursesTaken)
+print(pruned_by_PrevCourses)
+'''
+
+pruned_by_prereq = filterOptions.pruneByPrereq(courses, the_student_obj.coursesTaken)
+print(pruned_by_prereq)
