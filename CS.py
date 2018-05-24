@@ -8,32 +8,38 @@ intros = {'csc400', 'csc401', 'csc402', 'csc403', 'csc406', 'csc407'}
 
 foundations = {'csc421', 'csc435', 'csc447', 'csc453', 'se450'}
 
-advCourses = {}
+advCourses = set()
 
-openElects = set{}
+openElects = set()
 
-softDevs = {'csc436', 'csc438', 'csc439', 'csc443', 'csc448', 'csc461', 'csc462', 'csc471', 'csc472', 'csc475', 'csc534', 'csc536', 'csc540',
-              'csc548', 'csc549', 'csc551', 'csc552', 'csc553', 'csc595', 'cns450', 'gam690', 'gam691', 'hci441', 'se441', 'se452', 'se459',
-              'se525', 'se526', 'se554', 'se560', 'se491', 'se591', 'tdc478', 'tdc484', 'tdc568'}
+softDevs = {'csc 436', 'csc 438', 'csc 439', 'csc 443', 'csc 448', 'csc 461', 'csc 462', 'csc 471', 'csc 472', \
+            'csc 475', 'csc 534', 'csc 536', 'csc 540', 'csc 548', 'csc 549', 'csc 551', 'csc 552', 'csc 553', \
+            'csc 595', 'cns 450', 'gam 690', 'gam 691', 'hci 441', 'se 441', 'se 452', 'se 459', 'se 525', 'se 526', \
+            'se 554', 'se 560', 'se 491', 'se 591', 'tdc 478', 'tdc 484', 'tdc 568'}
 
-theorys = {'csc431', 'csc440', 'csc444', 'csc489', 'csc503', 'csc521', 'csc525', 'csc531', 'csc535', 'csc547', 'csc557', 'csc580', 'csc591',
-             'se553'}
+theorys = {'csc 431', 'csc 440', 'csc 444', 'csc 489', 'csc 503', 'csc 521', 'csc 525', 'csc 531', 'csc 535', \
+           'csc 547', 'csc 557', 'csc 580', 'csc 591', 'se 553'}
 
-dataScis = {'csc423', 'csc424', 'csc433', 'csc465', 'csc478', 'csc481', 'csc482', 'csc495', 'csc529', 'csc555', 'csc575', 'csc578', 'csc594',
-              'csc598', 'csc672'}
+dataScis = {'csc 423', 'csc 424', 'csc 433', 'csc 465', 'csc 478', 'csc 481', 'csc 482', 'csc 495', 'csc 529', \
+            'csc 555', 'csc 575', 'csc 578', 'csc 594', 'csc 598', 'csc 672'}
 
-databases = {'csc433', 'csc452', 'csc454', 'csc478', 'csc529', 'csc543', 'csc549', 'csc551', 'csc553', 'csc554', 'csc555', 'csc575', 'csc589'}
+databases = {'csc 433', 'csc 452', 'csc 454', 'csc 478', 'csc 529', 'csc 543', 'csc 549', 'csc 551', 'csc 553', \
+             'csc 554', 'csc 555', 'csc 575', 'csc 589'}
 
-ais = {'csc457', 'csc458', 'csc478', 'csc480', 'csc481', 'csc482', 'csc495', 'csc528', 'csc529', 'csc538', 'csc575', 'csc576', 'csc577', 'csc578',
-         'csc583', 'csc587', 'csc592', 'csc594', 'ect584', 'geo441', 'geo442', 'is467'}
+ais = {'csc 457', 'csc 458', 'csc 478', 'csc 480', 'csc 481', 'csc 482', 'csc 495', 'csc 528', 'csc 529', 'csc 538', \
+       'csc 575', 'csc 576', 'csc 577', 'csc 578', 'csc 583', 'csc 587', 'csc 592', 'csc 594', 'ect 584', 'geo 441', \
+       'geo 442', 'is 467'}
 
-softEngs = {'se430', 'se433', 'se441', 'csc452', 'se453', 'se456', 'se457', 'se459', 'se475', 'se477', 'se480', 'se482', 'se491', 'se525', 'se526',
-              'se529', 'se533', 'se546', 'se549', 'se554', 'se556', 'se560', 'se579', 'se581', 'se582', 'se591'}
+softEngs = {'se 430', 'se 433', 'se 441', 'csc 452', 'se 453', 'se 456', 'se 457', 'se 459', 'se 475', 'se 477', \
+            'se 480', 'se 482', 'se 491', 'se 525', 'se 526', 'se 529', 'se 533', 'se 546', 'se 549', 'se 554', \
+            'se 556', 'se 560', 'se 579', 'se 581', 'se 582', 'se 591'}
 
-gameRTSys = {'se461', 'csc462', 'csc486', 'csc588', 'gam425', 'gam450', 'gam453', 'gam470', 'gam475', 'gam476', 'gam486', 'gam575', 'gam576',
-               'gam690', 'gam691', 'gph436', 'gph469', 'gph570', 'gph572', 'gph580', 'se456'}
+gameRTSys = {'se 461', 'csc 462', 'csc 486', 'csc 588', 'gam 425', 'gam 450', 'gam 453', 'gam 470', 'gam 475', \
+             'gam 476', 'gam 486', 'gam 575', 'gam 576', 'gam 690', 'gam 691', 'gph 436', 'gph 469', 'gph 570', \
+             'gph 572', 'gph 580', 'se 456'}
 
-humCompInts = {'csc436', 'csc438', 'csc465', 'csc471', 'csc472', 'csc491', 'csc492', 'hci440', 'hci441', 'hci430', 'hci454'}
+humCompInts = {'csc 436', 'csc 438', 'csc 465', 'csc 471', 'csc 472', 'csc 491', 'csc 492', 'hci 440', 'hci 441', \
+               'hci 430', 'hci 454'}
 
 capstones = set()
 
@@ -42,6 +48,8 @@ majElects = softDevs.union(theorys).union(dataScis).union(databases).union(ais).
 courseDesignations = [intros, foundations, majElects, openElects, softDevs, theorys, dataScis,
                         databases, ais, softEngs, gameRTSys, humCompInts, advCourses]
 
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
 # Actually create the Curriculum object representing the Computer Science program (CS)

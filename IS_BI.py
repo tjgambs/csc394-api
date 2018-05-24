@@ -1,16 +1,16 @@
 import Curriculum
 
 # This section creates a Curriculum object for the IS master's program with the
-# Business Analysis / Systems Analysis Concentration.
+# Business Intelligence Concentration.
 
 # Course names that satisfy specific class types in a curriculum. The following sets will allow the search to recognize
 # the type of class it is looking at in order to properly count totals for goal checking
 
-intros = {}
+intros = {'it 401', 'it 403'}
 
 foundations = {'is 421', 'csc 451', 'is 422', 'is 430'}
 
-advCourses = {'cns 440', 'is 435', 'is 485', 'is 535', 'is 560'}
+advCourses = {'is 574', 'csc 423', 'is 467', 'is 549'}
 
 openElects = {'cns 440', 'cns 450', 'cns 455', 'cns 466', 'cns 477', 'cns 488', 'cns 489', 'cns 490', 'cns 533', \
               'cns 587', 'cns 594', 'cns 597', 'cns 599', 'csc 421', 'csc 426', 'csc 431', 'csc 435', 'csc 436', \
@@ -64,15 +64,15 @@ humCompInts = {}
 
 capstones = {'is 577'}
 
-majElects = {'ect 424', 'is 444', 'ect 480', 'is 483', 'hci 440', 'is 431', 'is 440', 'is 455','is 540', 'is 556', \
-             'is 565', 'is 578'}
+majElects = {'csc 424', 'csc 465', 'csc 495', 'csc 575', 'ect 584', 'geo 441', 'hci 512', 'ipd 447', 'ipd 451', \
+             'ipd 460', 'is 452', 'is 456', 'is 536', 'is 550'}
 
 courseDesignations = [intros, foundations, majElects, openElects, softDevs, theorys, dataScis,
                         databases, ais, softEngs, gameRTSys, humCompInts]
 
 # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
 # from a single concentration required for graduation, and advanced_courses
-gradReqs = [0, 4, 2, 1, 1, 0, 5]
+gradReqs = [2, 4, 3, 1, 1, 0, 4]
 
-# Actually create the Curriculum object representing the Information Science - Business Analysis / Systems Analysis program (CS)
-IS_BA_SA = Curriculum(courseDesignations, gradReqs)
+# Actually create the Curriculum object representing the Information Science - Business Intelligence Concentration
+IS_BI = Curriculum(courseDesignations, gradReqs)

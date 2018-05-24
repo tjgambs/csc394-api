@@ -1,7 +1,11 @@
 from queue import PriorityQueue
 import Plan
 import Student
+import Curriculum
+import getOptions
+import getCourseStr as gCS
 
+# =====================================================================================================================
 def heuristics(course, suggestedPlan, student):
     """ Assigns a score to the coursePlan based on the rarity of the course, the number of courses this one makes
     available in the future, and the students need and preference for a particular type of elective"""
@@ -10,39 +14,66 @@ def heuristics(course, suggestedPlan, student):
     unlocks = course.getH2
     bonus = 0
 
-    if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:           # If the student needs more electives
+    if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:            # If student needs more electives
         studentPref = student.elective_preference
-        if course in student.curriculum.courseTypeDesignation[studentPref]:    # Add bonus if course is preferred
+        courseStr = gCS.getCourseStr(course)
+        if courseStr in student.curriculum.courseTypeDesignation[studentPref]:  # Add bonus if course is preferred
             bonus += 5
 
         # If the course is a member of the students most frequently taken elective course type and the student has not
         # met the minimum number of courses from a single concentration requirement, add a weight
         electivesCount = ()
-        for i in range(5, len(student.curriculum.courseTypeDesignations) + 1):#13):
+        for i in range(5, 13):
             electivesCount.append(suggestedPlan.typesTaken[i])
         if max(electivesCount) < student.curriculum.gradReqs[5]:
             if course in student.curriculum.courseTypeDesignation[electivesCount.index(max())]:
                 bonus += 5
     return rarity + unlocks + bonus
+# =====================================================================================================================
 
 
+# =====================================================================================================================
+# Determines if the current plan is a goal state
 def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken \
         and curriculum.foundation_courses   <= plan.coursesTaken \
         and curriculum.gradReqs[2]          <= plan.typesTaken[2] \
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
-        and curriculum.gradReqs[4]          <= plan.typesTaken[4]:
+        and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
+        and curriculum.gradReqs[6]          <= plan.typesTaken[13]:
 
         for i in range(5, len(plan.typesTaken)):
             if curriculum.gradReqs[5]       <= plan.typesTaken[i]:
                 return True
     else:
         return False
+# =====================================================================================================================
 
 
-def getOptions(curriculum, plan):
-    return (0,0,0,0,0,0)
+# =====================================================================================================================
+# Determines which categories given course satisfies in a given curriculum.
+def classifyCourse (course, curriculum):
+    courseStr = gCS.getCourseStr(course)
+    courseType = list()
 
+    for i in range (0, len(curriculum.courseTypeDesignations)):
+        if courseStr in curriculum.courseTypeDesignations[i]:
+            courseType.append(i)
+
+    return courseType
+# =====================================================================================================================
+
+
+# =====================================================================================================================
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
+# from a single concentration required for graduation
+# Credit the earliest bucket. If those are full then look at the elective buckets with the max courses taken and credit
+# that elective bucket
+#def incrCourseType
+# =====================================================================================================================
+
+
+# =====================================================================================================================
 def automated(student):
     """Takes a student object and generates the shortest path to graduation. """
 
@@ -55,9 +86,10 @@ def automated(student):
     # Cost should represent how many quarters are needed to graduate. They should however be multiplied by some factor
     # so that they are larger than our heuristic values. Our heuristics should produce values for rarity that are 16 - #
     # of times offered in 16 quarters. So the values will range between 0-16. Unlocks could be anything between 0 and
-    # the # of total classes. My expectation is that a class will have less than 16 unlocks. If this is not the case
-    # then the cost formula needs to be revised. We never want to over-estimate the cost of a path to graduation.
-    # 42 is chosen because it is a guess of the maximum value of h(n). Should equal max(rarity) + max(unlocks) + bonus
+    # the # of total classes opened up by taking it. My expectation is that a class will have less than 16 unlocks. If
+    # this is not the case then the cost formula needs to be revised. We never want to over-estimate the cost of a path
+    # to graduation. 42 is chosen because it is a guess of the maximum value of h(n).
+    # Should equal max(rarity) + max(unlocks) + bonus
     # g(n) = (quarters x 42) or cost so far
     # h(n) = 42 - (rarity + unlocks + bonus)
     # f(n) = g(n) + h(n)
@@ -66,7 +98,7 @@ def automated(student):
     # 42 which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes will
     # appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it will be
     # admissible. As long as unlocks is less than 16 we will never have negative costs therefore h(n) will be considered
-    # consistent.
+    # consistent  .
 
     maxCourses = student.number_of_classes_per_quarter
     start = Plan(list(), student.courses_taken, student.current_quarter, maxCourses)
@@ -85,7 +117,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in GetOptions(student.curriculum, current):   # TODO: getOptions will be the database query
+        for suggestedCourse in getOptions(student.curriculum, current):
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
@@ -99,3 +131,4 @@ def automated(student):
                 cameFrom[suggestedPlan] = current
 
     return current.selectionOrder
+# =====================================================================================================================

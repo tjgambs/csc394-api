@@ -1,14 +1,16 @@
 class Student(object):
     previous_curriculum = ''
-    def __init__(self, student_id, number_of_classes_per_quarter, courses_taken, current_quarter, curriculum, elective_preference):
+    def __init__(self, student_id, number_of_classes_per_quarter, coursesTaken, termNum, curriculum,\
+                 elective_preference, option_type):
        self.student_id = student_id
        self.number_of_classes_per_quarter = number_of_classes_per_quarter
-       self.courses_taken = courses_taken
-       self.current_quarter = current_quarter
+       self.coursesTaken = coursesTaken
+       self.termNum = termNum
        self.curriculum = curriculum
        self.elective_preference = elective_preference
+       self.option_type = option_type
 
-
+# TODO: Consider if all methods below will be deleted
     def addCourse(self, Course_ID):
         self.courses_taken.add(Course_ID)
 
