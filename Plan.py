@@ -52,4 +52,44 @@ class Plan:
             self.selectionOrder.append(list())
             self.termNum = self.termNum + 5
 
+    # =====================================================================================================================
+    # Determines which categories given course satisfies in a given curriculum.
+    def classifyCourse(course, curriculum):
+        courseStr = gCS.getCourseStr(course)
+        courseType = list()
+
+        # TODO: need to check for non-string or nothing we need to just return
+
+        for i in range(0, len(curriculum.courseTypeDesignations)):
+            if courseStr in curriculum.courseTypeDesignations[i]:
+                courseType.append(i)
+
+        return courseType
+
+    # =====================================================================================================================
+
+    # =====================================================================================================================
+    # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
+    # from a single concentration required for graduation
+    # Credit the earliest bucket. If those are full then look at the elective buckets.
+    def incrCourseType(courseTypes, typesTaken, gradReqs):
+        for i in range(len(courseTypes)):                           # courseTypes (list) of all buckets the course fills
+            if courseTypes[i] < 5:                                  # Course = Intro, Foundation, Major E, or Open E
+                if typesTaken[courseTypes[i]] < gradReqs[i]:        # If the bucket that matches class type isn't full
+                    typesTaken[i] = typesTaken[i] + 1               # Increment that bucket
+                    return
+            elif courseTypes[i] == 13:                              # courseType is an Advanced Course
+                if typesTaken[courseTypes[i]] < gradReqs[13]:       # If the advanced course bucket isn't full
+                    typesTaken[i] = typesTaken[i] + 1               # Increment advanced course bucket count
+                    return
+            elif (courseTypes[i] < 13) and (courseTypes[i] >= 5):   # courseType is a CS focus bucket
+                typesTaken[i] = typesTaken[i] + 1                   # Increment specific focus bucket
+                typesTaken[5] = typesTaken[5] + 1                   # Increment max courses in specific bucket
+                return
+            else:                                                   # Course didn't match
+                return
+
+    # =====================================================================================================================
+
+
 

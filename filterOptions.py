@@ -4,6 +4,25 @@ import getCourseStr as gCS
 # =====================================================================================================================
 # Filter potential courses leaving only courses whose prerequisites are met
 
+# Converts prerequisite string into Strings, Tuples, and Lists for use in the prerequisite filter
+# Thank you Anthony
+
+#  TODO: Erik has a function that does this already replace this with it
+def parseString(string):
+    new_string = ''
+    old_i = ''
+    for i in string:
+        if i == ',':
+            new_string += '\''
+        if i in '])':
+            if old_i not in '[()]':
+                new_string += '\''
+        new_string += i
+        if i in '[(':
+            new_string += '\''
+        old_i = i
+    return eval(new_string)
+
 
 # Helper function for pruneByPrereq that asserts whether any element is satisfied
 def orTrue (orPreReqs, coursesTaken):
@@ -60,6 +79,7 @@ def pruneByPrereq (listFromQuery, coursesTaken):
         preReqs = list()
         if row[3] != None:
             preReqs = row[3]                                    # Index of prereqs column of course
+            preReqs = parseString(preReqs)                      # Convert the string into parsed format
 
         if type(preReqs) != list():                             # If not the empty list
             for i in range(len(preReqs)):                       # For each item in preReqs
@@ -87,49 +107,46 @@ def pruneByPrereq (listFromQuery, coursesTaken):
                                                                 # satisfied
 # =====================================================================================================================
 
-
 # =====================================================================================================================
 # Removes courses from the query results that collide with another course taken
 # 'mon' 'tues' 'wed' 'thurs' 'OnLine'. Found in column 2 of results
 def pruneOffDay(listFromQuery, dayToPrune):
     dayToPrune = dayToPrune.lower()
-    prunedList = ()
+    prunedList = []
 
     if dayToPrune == 'none':                                    # Does not filter any courses off of the list
         return listFromQuery
 
-    for course in range (len(listFromQuery)):
+    for course in listFromQuery:
         if course[2] == 'online':                               # If courses day of week is online
-            prunedList.append(listFromQuery[course])            # Can always include online courses
+            prunedList.append(course)                           # Can always include online courses
 
         if course[2] != dayToPrune:                             # If courses day of the week isn't dayToPrune
-            prunedList.append(listFromQuery[course])
+            prunedList.append(course)
 
     return prunedList
 # =====================================================================================================================
-
 
 # =====================================================================================================================
 # Removes courses from the query result that the student has already taken.
 def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
 
-    for course in range (len(listFromQuery)):
-        courseStr = gCS.getCourseStr(listFromQuery[course])
+    for course in listFromQuery:
+        courseStr = gCS.getCourseStr(course)
 
         if courseStr not in coursesTaken:
-            prunedList.append(listFromQuery[course])
+            prunedList.append(course)
 
     return prunedList
 # =====================================================================================================================
-
 
 # =====================================================================================================================
 # Removes courses from the query not present in given curriculum.
 def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
 
-    for course in len(listFromQuery):
+    for course in range (len(listFromQuery)):
         courseStr = gCS.getCourseStr(listFromQuery[course])
 
         if courseStr in curriculum.coursesInCurriculum:
@@ -138,12 +155,10 @@ def pruneByCurriculum(listFromQuery, curriculum):
     return prunedList
 # =====================================================================================================================
 
-
 # =====================================================================================================================
 # Applies all filters to the original query and returns filtered list.
 def filter (listFromQuery, plan, dayToPrune, curriculum):
     filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
     filter2 = pruneOffDay(filter1, dayToPrune)
-    #filter3 = pruneByCurriculum(filter2, curriculum)
-    #return pruneByPrereq(filter3, plan.coursesTaken)
-    return pruneByPrereq(filter2, plan.coursesTaken) # delete me
+    filter3 = pruneByCurriculum(filter2, curriculum)
+    return pruneByPrereq(filter3, plan.coursesTaken)

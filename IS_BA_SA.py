@@ -6,13 +6,13 @@ import Curriculum
 # Course names that satisfy specific class types in a curriculum. The following sets will allow the search to recognize
 # the type of class it is looking at in order to properly count totals for goal checking
 
-intros = {}
+intros = set()
 
-foundations = {'is 421', 'csc 451', 'is 422', 'is 430'}
+foundations = set(['is 421', 'csc 451', 'is 422', 'is 430'])
 
-advCourses = {'cns 440', 'is 435', 'is 485', 'is 535', 'is 560'}
+advCourses = set(['cns 440', 'is 435', 'is 485', 'is 535', 'is 560'])
 
-openElects = {'cns 440', 'cns 450', 'cns 455', 'cns 466', 'cns 477', 'cns 488', 'cns 489', 'cns 490', 'cns 533', \
+openElects = set(['cns 440', 'cns 450', 'cns 455', 'cns 466', 'cns 477', 'cns 488', 'cns 489', 'cns 490', 'cns 533', \
               'cns 587', 'cns 594', 'cns 597', 'cns 599', 'csc 421', 'csc 426', 'csc 431', 'csc 435', 'csc 436', \
               'csc 438', 'csc 439', 'csc 440', 'csc 443', 'csc 444', 'csc 447', 'csc 448', 'csc 451', 'csc 452', \
               'csc 453', 'csc 454', 'csc 457', 'csc 458', 'csc 461', 'csc 462', 'csc 471', 'csc 472', 'csc 475', \
@@ -44,31 +44,31 @@ openElects = {'cns 440', 'cns 450', 'cns 455', 'cns 466', 'cns 477', 'cns 488', 
               'se 695', 'se 696', 'se 698', 'se 699', 'tdc 431', 'tdc 460', 'tdc 463', 'tdc 464', 'tdc 468', 'tdc 477', \
               'tdc 478', 'tdc 484', 'tdc 511', 'tdc 512', 'tdc 514', 'tdc 532', 'tdc 542', 'tdc 560', 'tdc 562', \
               'tdc 563', 'tdc 567', 'tdc 568', 'tdc 577', 'tdc 593', 'tdc 594', 'tdc 599', 'tdc 690', 'tdc 696', \
-              'tdc 698'}
+              'tdc 698'])
 
-softDevs = {}
+softDevs = set()
 
-theorys = {}
+theorys = set()
 
-dataScis = {}
+dataScis = set()
 
-databases = {}
+databases = set()
 
-ais = {}
+ais = set()
 
-softEngs = {}
+softEngs = set()
 
-gameRTSys = {}
+gameRTSys = set()
 
-humCompInts = {}
+humCompInts = set()
 
-capstones = {'is 577'}
+capstones = set(['is 577'])
 
-majElects = {'ect 424', 'is 444', 'ect 480', 'is 483', 'hci 440', 'is 431', 'is 440', 'is 455','is 540', 'is 556', \
-             'is 565', 'is 578'}
+majElects = set(['ect 424', 'is 444', 'ect 480', 'is 483', 'hci 440', 'is 431', 'is 440', 'is 455','is 540', 'is 556', \
+             'is 565', 'is 578'])
 
-courseDesignations = [intros, foundations, majElects, openElects, softDevs, theorys, dataScis,
-                        databases, ais, softEngs, gameRTSys, humCompInts]
+courseDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
+                                           dataScis, databases, ais, softEngs, gameRTSys, humCompInts, advCourses]
 
 # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
 # from a single concentration required for graduation, and advanced_courses

@@ -1,6 +1,7 @@
 import search
 import generateOptions
 import serialization
+import CS #added by Jeff
 
 '''
 This runs the degree Builder. In order the following will occur:
@@ -15,6 +16,7 @@ This runs the degree Builder. In order the following will occur:
 def runDegree(self):
     student_object = serialization.deserializeForStudent(self)
     if student_object.option_type == 0:
+        student_object.curriculum = CS.defineCurriculum() # Jeff added this to add a real curriculum to the student rather than the '10'
         return automatedSearch(student_object)
     else:
         return manualSearch(student_object)

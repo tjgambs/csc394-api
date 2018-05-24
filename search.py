@@ -48,30 +48,11 @@ def isGoal(plan, curriculum):
     else:
         return False
 # =====================================================================================================================
-
-
-# =====================================================================================================================
-# Determines which categories given course satisfies in a given curriculum.
-def classifyCourse (course, curriculum):
-    courseStr = gCS.getCourseStr(course)
-    courseType = list()
-
-    for i in range (0, len(curriculum.courseTypeDesignations)):
-        if courseStr in curriculum.courseTypeDesignations[i]:
-            courseType.append(i)
-
-    return courseType
-# =====================================================================================================================
-
-
-# =====================================================================================================================
-# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
-# from a single concentration required for graduation
-# Credit the earliest bucket. If those are full then look at the elective buckets with the max courses taken and credit
-# that elective bucket
-#def incrCourseType
-# =====================================================================================================================
-
+# Adds the given suggested course into the suggested plan. Then it updates the typesTaken lists inside of the Plan.
+def addUpdateCourse(suggestedPlan, suggestedCourse, curriculum):
+    suggestedPlan.addCourse(suggestedCourse)
+    courseTypeList = suggestedPlan.classifyCourse(suggestedCourse, curriculum)
+    suggestedPlan.incrCourseType(courseTypeList, suggestedPlan.typesTaken, curriculum.gradReqs)
 
 # =====================================================================================================================
 def automated(student):
@@ -121,8 +102,7 @@ def automated(student):
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
-            suggestedPlan.addCourse(suggestedCourse)
-            # TODO: Update coursesTaken to account for added course
+            addUpdateCourse(suggestedPlan, suggestedCourse, curriculum)
 
             if suggestedPlan not in costSoFar or new_cost < costSoFar[suggestedPlan]:
                 costSoFar[suggestedPlan] = new_cost

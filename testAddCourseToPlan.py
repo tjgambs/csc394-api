@@ -91,4 +91,4 @@ print(the_student_obj.coursesTaken)
 
 #=======================================================================================================================
 # Run a query
-generateOptions.generateOptions(the_student_obj, "mon", csCurriculum)
+generateOptions.generateOptions(the_student_obj, 'mon', csCurriculum)
