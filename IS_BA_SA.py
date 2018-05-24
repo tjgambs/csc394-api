@@ -74,5 +74,8 @@ courseDesignations = [intros, foundations, majElects, openElects, capstones, sof
 # from a single concentration required for graduation, and advanced_courses
 gradReqs = [0, 4, 2, 1, 1, 0, 5]
 
+
 # Actually create the Curriculum object representing the Information Science - Business Analysis / Systems Analysis program (CS)
-IS_BA_SA = Curriculum(courseDesignations, gradReqs)
+def defineCurriculum():
+    program = Curriculum.Curriculum(courseDesignations, gradReqs)
+    return program

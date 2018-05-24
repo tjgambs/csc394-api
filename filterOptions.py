@@ -28,7 +28,7 @@ def parseString(string):
 def orTrue (orPreReqs, coursesTaken):
     preReqs = orPreReqs
 
-    for i in range (len(preReqs)):
+    for i in range(len(preReqs)):
 
         if type(preReqs[i]) is list:                            # 'OR' separated prerequisites
             if orTrue(preReqs[i]):                              # Something in 'OR' is present

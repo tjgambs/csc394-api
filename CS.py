@@ -57,5 +57,5 @@ gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
 def defineCurriculum():
     # Actually create the Curriculum object representing the Computer Science program (CS)
-    program = Curriculum(courseDesignations, gradReqs)
+    program = Curriculum.Curriculum(courseDesignations, gradReqs)
     return program

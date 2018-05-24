@@ -72,15 +72,23 @@ coursesInCurriculum = intros.union(foundations).union(majElects).union(openElect
 # from a single concentration required for graduation, and advanced_courses
 gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
+# create the curriculum from data above
 csCurriculum = Curriculum(courseDesignations, gradReqs)
-'''
+
+print('cs1:')
 print(csCurriculum.introductory_courses)
+'''
 print('Next line should be true')
 print('csc 400' in csCurriculum.introductory_courses)
 print('zroc 465' in csCurriculum.coursesInCurriculum)
 print(gradReqs[1])
 print('se 477' in csCurriculum.coursesInCurriculum)
 '''
+
+# create the curriculum from the CS class
+cs2 = defineCurriculum()
+print('cs2:')
+print(cs2.introductory_courses)
 #=======================================================================================================================
 # Create the student
 the_student_obj = Student.Student("123Test", 1, ["csc 401", "csc 400"], 990, csCurriculum, 5, 0)
@@ -91,4 +99,6 @@ print(the_student_obj.coursesTaken)
 
 #=======================================================================================================================
 # Run a query
-generateOptions.generateOptions(the_student_obj, 'mon', csCurriculum)
+# generateOptions.generateOptions(the_student_obj, 'mon', csCurriculum)
+# Currently is crashing because the parsing isn't quite correct. It gets this: File "<string>", line 1
+#     ['('CSC 406', CSC 402')]    It is currently missing the ' before CSC 402

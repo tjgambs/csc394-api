@@ -75,4 +75,6 @@ courseDesignations = [intros, foundations, majElects, openElects, capstones, sof
 gradReqs = [0, 4, 3, 1, 1, 0, 4]
 
 # Actually create the Curriculum object representing the Information Science - IT Enterprise Management concentration
-IS_IT = Curriculum(courseDesignations, gradReqs)
+def defineCurriculum():
+    program = Curriculum.Curriculum(courseDesignations, gradReqs)
+    return program
