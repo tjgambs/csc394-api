@@ -2,8 +2,7 @@
 import psycopg2
 import re
 import requests
-from tqdm import tqdm
-tqdm.monitor_interval = 0
+
 
 
 
