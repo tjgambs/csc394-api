@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from flask import abort, Blueprint, jsonify
 from app.utils import prepare_json_response
@@ -7,7 +9,6 @@ from app.models.professors import Professors
 from app.models.term_courses import TermCourses
 from app.models.terms import Terms
 from app.models.courses import Courses
-from app.models.reviews import Reviews
 import requests
 
 
