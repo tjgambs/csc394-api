@@ -1,17 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from flask import abort, Blueprint, jsonify, request, abort, g
+from flask import Blueprint, jsonify
 from app.utils import prepare_json_response
-from app import app, db, auth, basicauth
+from app import db, auth
 from app.controllers.v1.auth.auth import admin_access
-
-
-from app.models.professors import Professors
-from app.models.term_courses import TermCourses
-from app.models.terms import Terms
-from app.models.courses import Courses
-from app.models.reviews import Reviews
 from app.models.user import User
-import requests
 
 
 MOD = Blueprint("v1_admin", __name__, url_prefix="/v1/admin")

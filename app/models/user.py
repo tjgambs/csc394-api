@@ -22,7 +22,6 @@ class User(db.Model):
     elective = db.Column(db.String())
     number_credit_hours = db.Column(db.String())
 
-
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
 
