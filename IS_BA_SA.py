@@ -1,4 +1,4 @@
-import Curriculum
+from Curriculum import Curriculum
 
 # JP
 # This section creates a Curriculum object for the IS master's program with the
@@ -78,5 +78,5 @@ gradReqs = [0, 4, 2, 1, 1, 0, 5]
 
 # Actually create the Curriculum object representing the Information Science - Business Analysis / Systems Analysis program (CS)
 def defineCurriculum():
-    program = Curriculum.Curriculum(courseDesignations, gradReqs)
+    program = Curriculum(courseDesignations, gradReqs)
     return program

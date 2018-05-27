@@ -78,7 +78,7 @@ def pruneByPrereq (listFromQuery, coursesTaken):
                         break
 
         if canReach is True:                                    # If all prerequisites met add course to
-            reachableCourses.append(courseRow[0].lower())                     # reachableCourses
+            reachableCourses.append(courseRow[0].lower())       # reachableCourses
 
     return reachableCourses                                     # Return a list of all courses whose prerequisites are
                                                                 # satisfied

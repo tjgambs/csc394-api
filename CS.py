@@ -1,4 +1,4 @@
-import Curriculum
+from Curriculum import Curriculum
 
 # JP
 # This section creates a Curriculum object for the Computer Science master's program.
@@ -58,5 +58,5 @@ gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
 def defineCurriculum():
     # Actually create the Curriculum object representing the Computer Science program (CS)
-    program = Curriculum.Curriculum(courseDesignations, gradReqs)
+    program = Curriculum(courseDesignations, gradReqs)
     return program
