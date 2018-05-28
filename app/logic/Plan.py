@@ -48,6 +48,7 @@ class Plan:
         #    self.coursesTaken.add(courseInfo.getName)
         #    self.daysFilled.append(courseInfo.day)
 
+        # Avoid adding duplicates and avoid work if not needed.
         if courseInfo.getName == '' or courseInfo.getName in self.coursesTaken:
             return
 
@@ -62,7 +63,7 @@ class Plan:
                 self.selectionOrder.append(list())
 
 
-        # There is room for a class and we have been handed a class
+        # There is room for a class in current term and we have been handed a class.
         if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName != '':
         #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo != []:
             print("adding course to open term")
@@ -75,7 +76,7 @@ class Plan:
                 self.daysFilled.append(courseInfo.day)
             print(courseInfo.getName)
 
-        # There is room for a class but no classes are available. Advance to next term number
+        # There is room for a class but no classes are available. Advance to next term number.
         elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName == '':
         #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo == []:
             print("adding null to term due to no results")
@@ -92,9 +93,11 @@ class Plan:
             self.currTermIdx += 1  # recent addition
             print(courseInfo.getName)
 
-        # There isn't any room but there are more courses to add.
+        # There isn't any room but there are more courses to add. TODO: This might be the cause of the extra empty[]
+        # Might need to simply increment the term and index and not add anything. Would this be adding a class from one
+        # earlier term to the next term? That might allow courses to be added that aren't offered.                          Look into this.
         elif len(self.selectionOrder[self.currTermIdx]) >= self.maxCourses and courseInfo.getName != '':
-            print("adding empty list due to no courses available in term")
+            print("adding empty list due to no room available in term")
             self.selectionOrder.append(list())
             self.termNum = self.termNum + 5
             self.currTermIdx += 1  # recent addition
@@ -151,10 +154,10 @@ class Plan:
 
         for potentialFit in courseTypes:                            # For each bucket that the course fits in
 
-            if potentialFit == 2:
+            if potentialFit == 2:                                   # Credit Major Electives and allow credit for focus
                 typesTaken[2] += 1
 
-            if potentialFit < 5:                                    # Course = Intro, Foundation, Major E, or Open E
+            if potentialFit < 5:                                    # Course = Intro, Foundation, or Open E
                 for i in range(0, 5):                               # Loop through buckets
 
                     if typesTaken[i] < gradReqs[i] \

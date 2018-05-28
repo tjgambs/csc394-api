@@ -29,6 +29,10 @@ for courseInfo in kept:
 print(current.daysFilled)
 '''
 
+print("Goal Test: ")
+typesTaken
+print()
+
 for j in range(0,10):
 
     queryResults = TermCourses.getOptions(current.termNum)
@@ -46,6 +50,7 @@ for j in range(0,10):
             current.incrCourseType(courseTypes,current.typesTaken,curriculum.gradReqs)
         print("TermIdx: " + str(current.currTermIdx))
         print(current.selectionOrder)
+        print("Course Score: " + str(courseInfo.score))
         print("TermNum = " + str(current.termNum))
         print("TypesTaken: ")
         for i in range (0, len(current.typesTaken)):

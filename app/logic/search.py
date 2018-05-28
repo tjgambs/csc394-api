@@ -11,8 +11,6 @@ def heuristics(course, suggestedPlan, user):
     available in the future, and the users need and preference for a particular type of elective"""
 
     score = course.score
-    #rarity = course.getH1                   # TODO: Update this once you know how the scores are stored in database
-    #unlocks = course.getH2
     bonus = 0
 
     ''' currently our users store this differently than im expecting check that 
@@ -30,7 +28,7 @@ def heuristics(course, suggestedPlan, user):
             if course in user.curriculum.courseTypeDesignation[electivesCount.index(max())]:
                 bonus += 5
     '''
-    print("returning heuristic score")
+    print("returning heuristic score: " + str(score + bonus))
     return score + bonus
     #return rarity + unlocks + bonus
 # =====================================================================================================================
@@ -126,9 +124,10 @@ def automated(user):
 
         #for suggestedCourseInfo in filteredResults:
         for suggestedCourseInfo in restrictedResults:
-            print("SuggestedCourseInfo =============================================")
+            print("SuggestedCourseInfo ========================")
 
             suggestedCourse = suggestedCourseInfo.getName
+            print(suggestedCourse)
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, user.compMaxCourses)
             print("creating new plan")
