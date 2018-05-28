@@ -68,7 +68,7 @@ capstones = set(['is 577'])
 majElects = set(['ect 424', 'is 444', 'ect 480', 'is 483', 'hci 440', 'is 431', 'is 440', 'is 455','is 540', 'is 556', \
              'is 565', 'is 578'])
 
-courseDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
+courseTypeDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
                                            dataScis, databases, ais, softEngs, gameRTSys, humCompInts, advCourses]
 
 # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
@@ -78,5 +78,5 @@ gradReqs = [0, 4, 2, 1, 1, 0, 5]
 
 # Actually create the Curriculum object representing the Information Science - Business Analysis / Systems Analysis program (CS)
 def defineCurriculum():
-    program = Curriculum(courseDesignations, gradReqs)
+    program = Curriculum(courseTypeDesignations, gradReqs)
     return program

@@ -54,9 +54,10 @@ def isGoal(plan, curriculum):
 # =====================================================================================================================
 # Adds the given suggested course into the suggested plan. Then it updates the typesTaken lists inside of the Plan.
 def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
-    suggestedPlan.addCourse(suggestedCourseInfo)
-    courseTypeList = suggestedPlan.classifyCourse(suggestedCourseInfo, curriculum)
-    suggestedPlan.incrCourseType(courseTypeList, suggestedPlan.typesTaken, curriculum.gradReqs)
+    if suggestedCourseInfo.getName not in suggestedPlan.coursesTaken:
+        suggestedPlan.addCourse(suggestedCourseInfo)
+        courseTypeList = suggestedPlan.classifyCourse(suggestedCourseInfo, curriculum)
+        suggestedPlan.incrCourseType(courseTypeList, suggestedPlan.typesTaken, curriculum.gradReqs)
 
 # =====================================================================================================================
 def automated(user):

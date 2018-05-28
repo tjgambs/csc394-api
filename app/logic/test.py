@@ -1,17 +1,55 @@
-from app.logic import serialization
-from app.logic import Student
+from Queue import PriorityQueue
+from app.logic.Plan import Plan
+from app.logic.Curriculum import Curriculum
+from app.models.term_courses import TermCourses
+from app.logic.filterOptions import filter
+from app.logic.CS import defineCurriculum
 
-jsonDump = {"student_id": "123Test", \
-    "number_of_classes_per_quarter": "1", \
-    "coursesTaken": ["csc 401"], \
-    "numTerm": "990", \
-    "curriculum": "10", \
-    "elective_preference": "5", \
-    "option_type": "0"}
+current = Plan([], set(), 1005, 2)
+curriculum = defineCurriculum()
+print(curriculum.courseTypeDesignations[1])
 
-id = jsonDump['student_id']
+queryResults = TermCourses.getOptions(current.termNum)
+filteredResults = filter(queryResults, current, 'none', curriculum)
+numToKeep = 4
+kept = []
+'''
+for i in range (0, numToKeep):
+    kept.append(filteredResults[i])
 
-the_Student = Student()
-the_Student.student_id = jsonDump['student_id']
+for courseInfo in kept:
+    print("============================")
+    if courseInfo.getName not in current.coursesTaken:
+        current.addCourse(courseInfo)
+    print("TermIdx: " + str(current.currTermIdx))
+    print(current.selectionOrder)
+    print("TermNum = " + str(current.termNum))
+    print("============================")
 
-print(the_Student.student_id)
+print(current.daysFilled)
+'''
+
+for j in range(0,10):
+
+    queryResults = TermCourses.getOptions(current.termNum)
+    filteredResults = filter(queryResults, current, current.daysFilled, curriculum)
+
+    kept = []
+    for i in range (0, numToKeep):
+        kept.append(filteredResults[i])
+
+    for courseInfo in kept:
+        print("============================")
+        if courseInfo.getName not in current.coursesTaken:
+            current.addCourse(courseInfo)
+            courseTypes = current.classifyCourse(courseInfo,curriculum)
+            current.incrCourseType(courseTypes,current.typesTaken,curriculum.gradReqs)
+        print("TermIdx: " + str(current.currTermIdx))
+        print(current.selectionOrder)
+        print("TermNum = " + str(current.termNum))
+        print("TypesTaken: ")
+        for i in range (0, len(current.typesTaken)):
+            print(current.typesTaken[i])
+        print("============================")
+
+    print(current.daysFilled)

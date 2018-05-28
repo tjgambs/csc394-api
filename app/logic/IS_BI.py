@@ -68,7 +68,7 @@ capstones = set(['is 577'])
 majElects = set(['csc 424', 'csc 465', 'csc 495', 'csc 575', 'ect 584', 'geo 441', 'hci 512', 'ipd 447', 'ipd 451', \
              'ipd 460', 'is 452', 'is 456', 'is 536', 'is 550'])
 
-courseDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
+courseTypeDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
                                            dataScis, databases, ais, softEngs, gameRTSys, humCompInts, advCourses]
 
 # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
@@ -77,5 +77,5 @@ gradReqs = [2, 4, 3, 1, 1, 0, 4]
 
 # Actually create the Curriculum object representing the Information Science - Business Intelligence Concentration
 def defineCurriculum():
-    program = Curriculum(courseDesignations, gradReqs)
+    program = Curriculum(courseTypeDesignations, gradReqs)
     return program

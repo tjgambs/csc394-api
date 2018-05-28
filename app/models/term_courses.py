@@ -25,10 +25,15 @@ class TermCourses(db.Model):
         else:
             stream = str(quarter)
 
+        #q = (db.session.query(Csc394Courses.subject, Csc394Courses.course_nbr, Csc394Courses.score, Csc394Courses.prereqs, DaysOffered.day)
+        #     .join(DaysOffered, (DaysOffered.subject == Csc394Courses.subject and DaysOffered.catalog_nbr == Csc394Courses.course_nbr))
+        #     .filter(DaysOffered.stream == stream )
+        #     .order_by(Csc394Courses.score))
+
         q = (db.session.query(Csc394Courses.subject, Csc394Courses.course_nbr, Csc394Courses.score, Csc394Courses.prereqs, DaysOffered.day)
-             .join(DaysOffered, (DaysOffered.subject == Csc394Courses.subject and DaysOffered.catalog_nbr == Csc394Courses.course_nbr))
-             .filter(DaysOffered.stream == stream )
-             .order_by(Csc394Courses.score))
+              .join(DaysOffered, (DaysOffered.subject == Csc394Courses.subject and DaysOffered.catalog_nbr == Csc394Courses.course_nbr))
+              .filter(DaysOffered.stream == stream )
+              .order_by(Csc394Courses.score.desc()))
 
         return [result(row) for row in q.all()]
 

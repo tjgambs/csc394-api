@@ -46,7 +46,7 @@ capstones = set()
 
 majElects = softDevs.union(theorys).union(dataScis).union(databases).union(ais).union(softEngs).union(gameRTSys).union(humCompInts)
 
-courseDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
+courseTypeDesignations = [intros, foundations, majElects, openElects, capstones, softDevs, theorys, \
                                            dataScis, databases, ais, softEngs, gameRTSys, humCompInts, advCourses]
 
 coursesInCurriculum = intros.union(foundations).union(majElects).union(openElects).union(softDevs).union(theorys).union \
@@ -58,5 +58,5 @@ gradReqs = [6, 5, 8, 0, 0, 4, 0]
 
 def defineCurriculum():
     # Actually create the Curriculum object representing the Computer Science program (CS)
-    program = Curriculum(courseDesignations, gradReqs)
+    program = Curriculum(courseTypeDesignations, gradReqs)
     return program
