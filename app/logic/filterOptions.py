@@ -122,28 +122,16 @@ def pruneByPrereq (listFromQuery, coursesTaken):
 # Removes courses from the query results that collide with another course taken
 # 'mon' 'tues' 'wed' 'thurs' 'OnLine'. Found in column 2 of results
 def pruneOffDay(listFromQuery, daysToPrune):
-    prunedList = []
-
     if daysToPrune == []:
-        #print("no days to prune off")
         return listFromQuery
-
-    #print("pruning off day")
+    prunedList = []
     for day in daysToPrune:
-        dayL = day.lower()
-
-        if dayL == 'none':                                       # Does not filter any courses off of the list
-            return listFromQuery
-
+        day = day.lower()
         for course in listFromQuery:
             if course.day == 'OnLine':                           # If courses day of week is online      TODO: Verify that the index is where day offered is stored
-                #print("add online course")
                 prunedList.append(course)                        # Can always include online courses
-
-            if course.day != dayL:                             # If courses day of the week isn't dayToPrune
-                #print("add course from day currently open")
+            elif course.day != day:                             # If courses day of the week isn't dayToPrune
                 prunedList.append(course)
-
     return prunedList
 # =====================================================================================================================
 
@@ -151,13 +139,9 @@ def pruneOffDay(listFromQuery, daysToPrune):
 # Removes courses from the query result that the student has already taken. Expects a list of rows from query
 def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
-
     for courseRow in listFromQuery:
-        #print("pruneOffPrevCourses")
         if courseRow.getName.lower() not in coursesTaken:
-            #print("appending untaken course prunePrevCourses")
             prunedList.append(courseRow)
-
     return prunedList
 # =====================================================================================================================
 
@@ -165,12 +149,9 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
 # Removes courses from the query not present in given curriculum. Expects a list of rows from query
 def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
-    #print("entering pruneByCurriculum")
     for courseRow in listFromQuery:
         if courseRow.getName.lower() in curriculum.coursesInCurriculum:
-            #print("appending")
             prunedList.append(courseRow)
-
     return prunedList
 # =====================================================================================================================
 
