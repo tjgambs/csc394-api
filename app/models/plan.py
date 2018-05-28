@@ -1,14 +1,15 @@
 # JP
+
+
 class Plan:
     """class that represents a curriculum at a particular point during search."""
 
-    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses):
+    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
         self.termNum = int(termNum)                          # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
-        #self.currTermIdx = len(selectionOrder)          # Stores index of the current term we are preparing
-        self.currTermIdx = 0  # Stores index of the current term we are preparing
+        self.currTermIdx = currTermIdx          # Stores index of the current term we are preparing
         self.daysFilled = []
 
         # Count of each type of course taken at this point in the plan. Used for goal checking.
@@ -31,56 +32,39 @@ class Plan:
 
         self.typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+    @property
+    def term_finished(self):
+        return len(self.selectionOrder[self.currTermIdx]) == self.maxCourses
+
+    @property
+    def _id(self):
+        return ''.join([y for x in self.selectionOrder for y in x])
+
     # Adds given course to the current plans term. If no course is available, then it leaves the term partially empty
     # if something else has been added to the term. If no options are available it instead creates an empty term.
     # Once the term is full or options are exhausted it advances termNum
 
     def addCourse(self, courseInfo):
-        print("adding course to plan")
+
+        if courseInfo.getName in self.coursesTaken:
+            return
 
         # new code to account for the first plan which has no selectionOrder
-        if len(self.selectionOrder) == 0:
-        #if self.selectionOrder == list():
-            print("creating initial term in selectionOrder")
-            self.selectionOrder.append(list())
-            print(courseInfo.getName)
-            self.selectionOrder[0].append(courseInfo.getName)
+        if len(self.selectionOrder) == self.currTermIdx:
+            self.selectionOrder.append([courseInfo.getName])
             self.coursesTaken.add(courseInfo.getName)
             self.daysFilled.append(courseInfo.day)
 
         # There is room for a class and we have been handed a class
-        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName != '':
-        #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo != []:
-            print("adding course to open term")
+        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses:
             self.selectionOrder[self.currTermIdx].append(courseInfo.getName)
             self.coursesTaken.add(courseInfo.getName)
             self.daysFilled.append(courseInfo.day)
-            print(courseInfo.getName)
 
-        # There is room for a class but no classes are available. Advance to next term number
-        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName == '':
-        #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo == []:
-            print("adding null to term due to no results")
-            self.selectionOrder[self.currTermIdx].append(courseInfo.getName)
+        if len(self.selectionOrder[self.currTermIdx]) == self.maxCourses:
+            self.selectionOrder.append([])
             self.termNum = self.termNum + 5
-            self.currTermIdx += 1 # recent addition
-            print(courseInfo.getName)
-
-        # There isn't room for another class. Advance to next term.
-        else:
-            print("adding empty list due to no courses available in term")
-            self.selectionOrder.append(list())
-            self.termNum = self.termNum + 5
-            self.currTermIdx += 1 # recent addition
-            print(courseInfo.getName)
-        '''
-        # There is room for a class and we have been handed a class
-        if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course != list():
-            print("adding course to open term")
-            self.selectionOrder[self.currTermIdx].append(course.getName)
-            self.coursesTaken.add(course.getName)
-            self.daysFilled.append(course.daysFilled)
-        '''
+            self.currTermIdx += 1
 
 
 
@@ -89,14 +73,9 @@ class Plan:
 
     def classifyCourse(self, courseInfo, curriculum):
         courseType = list()
-
-        print("classifying courses type")
-        # TODO: need to check for non-string or nothing we need to just return
-
         for i in range(0, len(curriculum.courseTypeDesignations)):
             if courseInfo.getName in curriculum.courseTypeDesignations[i]:
                 courseType.append(i)
-
         return courseType
 
     # =====================================================================================================================
@@ -106,7 +85,7 @@ class Plan:
     # from a single concentration required for graduation. Credit the earliest bucket. If those are full then look at
     # the elective buckets.
     # TODO: test this
-    def incrCourseType(self, courseTypes, typesTaken, gradReqs):
+    def incrCourseType(self, courseTypes, gradReqs):
         print("Incrementing Course Type")
         if courseTypes == list():                                   # Course doesn't fill a courseType don't increment
             return
@@ -114,21 +93,20 @@ class Plan:
         for potentialFit in courseTypes:                            # For each bucket that the course fits in
             if potentialFit < 5:                                    # Course = Intro, Foundation, Major E, or Open E
                 for i in range(0, 5):                               # Loop through buckets
-                    if typesTaken[i] < gradReqs[i]:                 # If the bucket that matches class type isn't full
-                        typesTaken[i] += 1                          # Increment that bucket
+                    if self.typesTaken[i] < gradReqs[i]:                 # If the bucket that matches class type isn't full
+                        self.typesTaken[i] += 1                          # Increment that bucket
                         return
 
             elif potentialFit == 13:                                # Course is an Advanced Course
-                if typesTaken[13] < gradReqs[6]:                    # If the advanced course bucket isn't full
-                    typesTaken[13] += 1                             # Increment advanced course bucket count
+                if self.typesTaken[13] < gradReqs[6]:                    # If the advanced course bucket isn't full
+                    self.typesTaken[13] += 1                             # Increment advanced course bucket count
                     return
 
             elif (potentialFit < 13) and (potentialFit >= 5):       # Course fits at least one CS focus area
                 for i in range(5, 13):                              # Loop through focus area buckets
-                    if typesTaken[i] < gradReqs[5]:                 # If the bucket that matches class type isn't full
-                        typesTaken[i] += 1                          # Increment specific focus bucket
+                    if self.typesTaken[i] < gradReqs[5]:                 # If the bucket that matches class type isn't full
+                        self.typesTaken[i] += 1                          # Increment specific focus bucket
                         return
-
             else:                                                   # Course didn't match
                 return
     # =====================================================================================================================

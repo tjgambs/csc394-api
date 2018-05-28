@@ -2,7 +2,7 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from app import app, db, cache
-from app.logic import CS, IS_IT, IS_DBA, IS_BI, IS_BA_SA
+from app.models.curriculums import CS
 import datetime
 
 
@@ -46,40 +46,38 @@ class User(db.Model):
 
     @property
     def serialize(self):
-        return {
-            'email': self.email,
-            'token': self.token,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'account_type': self.account_type_string,
-            'undergraduate_degree': self.undergraduate_degree,
-            'graduate_degree': self.graduate_degree,
-            'automation': self.automation,
-            'graduate_degree_concentration': self.graduate_degree_concentration,
-            'elective': self.elective,
-            'number_credit_hours': self.number_credit_hours
-        }
+        return {'email': self.email,
+                'token': self.token,
+                'first_name': self.first_name,
+                'last_name': self.last_name,
+                'account_type': self.account_type_string,
+                'undergraduate_degree': self.undergraduate_degree,
+                'graduate_degree': self.graduate_degree,
+                'automation': self.automation,
+                'graduate_degree_concentration': self.graduate_degree_concentration,
+                'elective': self.elective,
+                'number_credit_hours': self.number_credit_hours}
 
     @property
     def curriculum(self):
         if self.graduate_degree == "Computer Science":
-            return CS.defineCurriculum()
+            return CS
         elif self.graduate_degree == "Information Science":
             if self.graduate_degree_concentration == 'Business Analysis/Systems Analysis':
-                return IS_BA_SA.defineCurriculum()
+                return IS_BA_SA
             elif self.graduate_degree_concentration == 'Business Intelligence':
-                return IS_BI.defineCurriculum()
-            elif self.graduate_degree_concentration == 'Database Administration':
-                return IS_DBA.defineCurriculum()
+                return IS_BI
             elif self.graduate_degree_concentration == 'IT Enterprise Management':
-                return IS_IT.defineCurriculum()
+                return IS_IT
             else:
-                return
+                raise ValueError('%s is not a supported concentration' %
+                                 self.graduate_degree_concentration)
         else:
-            return
+            raise ValueError('%s is not a supported degree' %
+                             self.graduate_degree)
 
     @property
-    def compMaxCourses (self):
+    def max_courses(self):
         return int(self.number_credit_hours) / 4
 
     @property
@@ -89,7 +87,6 @@ class User(db.Model):
     @property
     def getTerm(self):
         return '1005'
-
 
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])

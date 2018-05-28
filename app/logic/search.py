@@ -1,8 +1,9 @@
 from Queue import PriorityQueue
-from app.logic.Plan import Plan
-from app.logic.Curriculum import Curriculum
+from app.models.plan import Plan
 from app.models.term_courses import TermCourses
 from app.logic.filterOptions import filter
+
+import copy
 
 # JP
 # =====================================================================================================================
@@ -15,7 +16,7 @@ def heuristics(course, suggestedPlan, user):
     #unlocks = course.getH2
     bonus = 0
 
-    ''' currently our users store this differently than im expecting check that 
+    ''' current_planly our users store this differently than im expecting check that 
     if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:            # If user needs more electives
         #userPref = user.elective
         if course.getName in user.curriculum.courseTypeDesignations[user.elective]:  # Add bonus if course is preferred
@@ -37,7 +38,7 @@ def heuristics(course, suggestedPlan, user):
 
 
 # =====================================================================================================================
-# Determines if the current plan is a goal state
+# Determines if the current_plan plan is a goal state
 def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken \
         and curriculum.foundation_courses   <= plan.coursesTaken \
@@ -56,7 +57,7 @@ def isGoal(plan, curriculum):
 def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
     suggestedPlan.addCourse(suggestedCourseInfo)
     courseTypeList = suggestedPlan.classifyCourse(suggestedCourseInfo, curriculum)
-    suggestedPlan.incrCourseType(courseTypeList, suggestedPlan.typesTaken, curriculum.gradReqs)
+    suggestedPlan.incrCourseType(courseTypeList, curriculum.gradReqs)
 
 # =====================================================================================================================
 def automated(user):
@@ -85,65 +86,51 @@ def automated(user):
     # admissible. As long as unlocks is less than 16 we will never have negative costs therefore h(n) will be considered
     # consistent  .
 
-    print("entering the while loop")
-    start = Plan(list(), user.getCoursesTaken, user.getTerm, user.compMaxCourses)
+    start = Plan(
+        selectionOrder=list(), 
+        coursesTaken=user.getCoursesTaken, 
+        termNum=user.getTerm,
+        currTermIdx=0,
+        maxCourses=user.max_courses)
     curriculum = user.curriculum
     frontier = PriorityQueue()
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    cameFrom[start] = None
-    costSoFar[start] = 0
     stdCost = 100                # TODO: The arbitrary constant cost of selecting a class described above
 
+    i = 0
     while not frontier.empty():
-        print("Frontier Size: " + str(frontier.qsize()))
-        current = frontier.get()
-        print("pop off frontier")
 
-        if isGoal(current, curriculum):
-            print("goal check true")
+        current_plan = frontier.get()
+        if isGoal(current_plan, curriculum):
             break
-        print("not in goal state")
+        
+        queryResults = TermCourses.getAvailableCourses(current_plan.termNum)
+        filteredResults = filter(queryResults, current_plan, current_plan.daysFilled, curriculum)
 
-        print("TermNum: " + str(current.termNum))
-        queryResults = TermCourses.getOptions(current.termNum)
-        print(len(queryResults))
-        print("query")
-        #break # delete me
-        filteredResults = filter(queryResults, current, current.daysFilled, curriculum)
-        print("query resulted in: " + str(len(filteredResults)))
+        for suggestedCourseInfo in filteredResults:
+            suggestedPlan = Plan(
+                selectionOrder=copy.deepcopy(current_plan.selectionOrder), 
+                coursesTaken=copy.deepcopy(current_plan.coursesTaken), 
+                termNum=copy.deepcopy(current_plan.termNum),
+                currTermIdx=copy.deepcopy(current_plan.currTermIdx), 
+                maxCourses=user.max_courses)
+            addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
-        # Restricting the filteredResults to a managable size. Limiting it to best 4
-        if len(filteredResults) > 4:
-            maxResults = 4
-        else:
-            maxResults = len(filteredResults)
-        restrictedResults = []
-        for i in range(0, maxResults):
-            restrictedResults.append(filteredResults[i])
+            new_cost = costSoFar.get(suggestedPlan._id, 0) + stdCost
 
-        #for suggestedCourseInfo in filteredResults:
-        for suggestedCourseInfo in restrictedResults:
-            print("SuggestedCourseInfo =============================================")
 
-            suggestedCourse = suggestedCourseInfo.getName
-            new_cost = costSoFar[current] + stdCost
-            suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, user.compMaxCourses)
-            print("creating new plan")
-            addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum) #changed from suggestedCourse to suggestedCourseInfo
-            print("updating plan to include course")
+            print suggestedPlan.selectionOrder
 
-            if suggestedPlan not in costSoFar or new_cost < costSoFar[suggestedPlan]:
-                print("update plan cost")
-                costSoFar[suggestedPlan] = new_cost
+            # Something beneath this is not working right, not sure what.
+
+            if suggestedPlan._id not in costSoFar or new_cost < costSoFar[suggestedPlan._id]:
+                costSoFar[suggestedPlan._id] = new_cost
                 priority = new_cost + (stdCost - heuristics(suggestedCourseInfo, suggestedPlan, user))
                 frontier.put(suggestedPlan, priority)
-                print("add suggestedPlan to frontier")
-                cameFrom[suggestedPlan] = current
-                print("update cameFrom")
-                print("============================================")
+                if suggestedPlan.term_finished:
+                    cameFrom[suggestedPlan._id] = suggestedPlan
 
-    print(current.selectionOrder)
-    return current.selectionOrder
+    return current_plan.selectionOrder
 # =====================================================================================================================
