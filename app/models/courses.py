@@ -28,3 +28,4 @@ class Courses(db.Model):
                 'description': self.description,
                 'prerequisites': self.prerequisites,
                 'learning_domain': self.learning_domain}
+

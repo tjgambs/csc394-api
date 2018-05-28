@@ -5,7 +5,7 @@ class Csc394Courses(db.Model):
 
     __tablename__ = "csc394_courses"
 
-    id = db.Column(db.String)
+    id = db.Column(db.String, primary_key = True)
     title = db.Column(db.String)
     subject = db.Column(db.String)
     course_nbr = db.Column(db.Integer)
@@ -14,6 +14,10 @@ class Csc394Courses(db.Model):
     score = db.Column(db.Integer)
     unlock_score = db.Column(db.Integer)
     rarity_score = db.Column(db.Integer)
+
+    @property
+    def compName(self):
+        return self.subject + ' ' + str(self.course_nbr)
 
     @property
     def serialize(self):

@@ -1,6 +1,3 @@
-from getCourseStr import getCourseStr
-
-
 # JP
 class Plan:
     """class that represents a curriculum at a particular point during search."""
@@ -8,9 +5,11 @@ class Plan:
     def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
-        self.termNum = termNum                          # Number representing term in the database increments by 5s
+        self.termNum = int(termNum)                          # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
-        self.currTermIdx = len(selectionOrder)          # Stores index of the current term we are preparing
+        #self.currTermIdx = len(selectionOrder)          # Stores index of the current term we are preparing
+        self.currTermIdx = 0  # Stores index of the current term we are preparing
+        self.daysFilled = []
 
         # Count of each type of course taken at this point in the plan. Used for goal checking.
         # Each index represents a type of course. Stores the int num of that type taken
@@ -36,35 +35,66 @@ class Plan:
     # if something else has been added to the term. If no options are available it instead creates an empty term.
     # Once the term is full or options are exhausted it advances termNum
 
-    def addCourse(self, course):
+    def addCourse(self, courseInfo):
+        print("adding course to plan")
+
+        # new code to account for the first plan which has no selectionOrder
+        if len(self.selectionOrder) == 0:
+        #if self.selectionOrder == list():
+            print("creating initial term in selectionOrder")
+            self.selectionOrder.append(list())
+            print(courseInfo.getName)
+            self.selectionOrder[0].append(courseInfo.getName)
+            self.coursesTaken.add(courseInfo.getName)
+            self.daysFilled.append(courseInfo.day)
 
         # There is room for a class and we have been handed a class
-        if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course != list():
-            courseStr = getCourseStr(course)
-            self.selectionOrder[self.currTermIdx].append(courseStr)
-            self.coursesTaken.add(courseStr)
+        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName != '':
+        #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo != []:
+            print("adding course to open term")
+            self.selectionOrder[self.currTermIdx].append(courseInfo.getName)
+            self.coursesTaken.add(courseInfo.getName)
+            self.daysFilled.append(courseInfo.day)
+            print(courseInfo.getName)
 
         # There is room for a class but no classes are available. Advance to next term number
-        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course == list():
-            self.selectionOrder[self.currTermIdx].append(course)
+        elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo.getName == '':
+        #elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and courseInfo == []:
+            print("adding null to term due to no results")
+            self.selectionOrder[self.currTermIdx].append(courseInfo.getName)
             self.termNum = self.termNum + 5
+            self.currTermIdx += 1 # recent addition
+            print(courseInfo.getName)
 
         # There isn't room for another class. Advance to next term.
         else:
+            print("adding empty list due to no courses available in term")
             self.selectionOrder.append(list())
             self.termNum = self.termNum + 5
+            self.currTermIdx += 1 # recent addition
+            print(courseInfo.getName)
+        '''
+        # There is room for a class and we have been handed a class
+        if len(self.selectionOrder[self.currTermIdx]) < self.maxCourses and course != list():
+            print("adding course to open term")
+            self.selectionOrder[self.currTermIdx].append(course.getName)
+            self.coursesTaken.add(course.getName)
+            self.daysFilled.append(course.daysFilled)
+        '''
+
+
 
     # =====================================================================================================================
     # Determines which categories given course satisfies in a given curriculum.
 
-    def classifyCourse(course, curriculum):
-        courseStr = getCourseStr(course)
+    def classifyCourse(self, courseInfo, curriculum):
         courseType = list()
 
+        print("classifying courses type")
         # TODO: need to check for non-string or nothing we need to just return
 
         for i in range(0, len(curriculum.courseTypeDesignations)):
-            if courseStr in curriculum.courseTypeDesignations[i]:
+            if courseInfo.getName in curriculum.courseTypeDesignations[i]:
                 courseType.append(i)
 
         return courseType
@@ -76,7 +106,8 @@ class Plan:
     # from a single concentration required for graduation. Credit the earliest bucket. If those are full then look at
     # the elective buckets.
     # TODO: test this
-    def incrCourseType(courseTypes, typesTaken, gradReqs):
+    def incrCourseType(self, courseTypes, typesTaken, gradReqs):
+        print("Incrementing Course Type")
         if courseTypes == list():                                   # Course doesn't fill a courseType don't increment
             return
 

@@ -1,6 +1,6 @@
-import search
-import generateOptions
-import serialization
+from app.logic import search
+from app.logic import generateOptions
+from app.logic import serialization
 
 '''
 This runs the degree Builder. In order the following will occur:

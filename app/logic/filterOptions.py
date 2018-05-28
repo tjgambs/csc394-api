@@ -1,5 +1,4 @@
-from getCourseStr import getCourseStr
-from class_tree import class_list
+from app.logic.class_tree import class_list
 
 # JP
 # =====================================================================================================================
@@ -55,31 +54,66 @@ def pruneByPrereq (listFromQuery, coursesTaken):
 
     for courseRow in listFromQuery:                             # For each row(course info) in listFromQuery
         canReach = True                                         # Tracks if the student has all needed prerequisites
+        #print("getting class_list for prereqs")
         cl = class_list()
-        preReqs = cl.get_prereqs(courseRow[0].upper())          # Retrieve properly formatted preReqs from dictionary
+        #print("getting prereqs in proper format")
+        preReqs = cl.class_tree.get(courseRow.getName.upper())or []
+        #preReqs = cl.get_prereqs(courseRow.getName.upper())    # Retrieve properly formatted preReqs from dictionary
 
+        for course in preReqs:  # For each item in preReqs
+            # #print("Looping through prereqs")
+            if type(course) is list:  # 'OR' separated prerequisites
+                # print("found an OR")
+                if not orTrue(course, coursesTaken):
+                    # print("OR condition not met")
+                    canReach = False
+                    break
+
+            elif type(course) is tuple:  # 'AND' separated prerequisites
+                # print("found an AND")
+                if not andTrue(course, coursesTaken):
+                    # print("AND condition not met")
+                    canReach = False
+                    break
+
+            else:  # Single prereq
+                # print("found a string")
+                if course.lower() not in coursesTaken:
+                    # print("String condition not met")
+                    canReach = False
+                    break
+        '''
         if preReqs == []:                                       # Course doesn't have any preReqs
-            break                                               # Student qualifies for the course
+            continue
         else:
             for course in preReqs:                              # For each item in preReqs
+                # #print("Looping through prereqs")
                 if type(course) is list:                        # 'OR' separated prerequisites
+                    # print("found an OR")
                     if not orTrue(course, coursesTaken):
+                        #print("OR condition not met")
                         canReach = False
                         break
 
                 elif type(course) is tuple:                     # 'AND' separated prerequisites
+                    #print("found an AND")
                     if not andTrue(course, coursesTaken):
+                        #print("AND condition not met")
                         canReach = False
                         break
 
                 else:                                           # Single prereq
+                    #print("found a string")
                     if course.lower() not in coursesTaken:
+                        #print("String condition not met")
                         canReach = False
                         break
+            '''
 
         if canReach is True:                                    # If all prerequisites met add course to
-            reachableCourses.append(courseRow[0].lower())       # reachableCourses
-
+            #print("appending course we have prereqs for")
+            reachableCourses.append(courseRow)                  # reachableCourses
+    print("returning reachableCourses from preReq Filter: " + str(len(reachableCourses)))
     return reachableCourses                                     # Return a list of all courses whose prerequisites are
                                                                 # satisfied
 # =====================================================================================================================
@@ -87,19 +121,28 @@ def pruneByPrereq (listFromQuery, coursesTaken):
 # =====================================================================================================================
 # Removes courses from the query results that collide with another course taken
 # 'mon' 'tues' 'wed' 'thurs' 'OnLine'. Found in column 2 of results
-def pruneOffDay(listFromQuery, dayToPrune):
-    dayToPrune = dayToPrune.lower()
+def pruneOffDay(listFromQuery, daysToPrune):
     prunedList = []
 
-    if dayToPrune == 'none':                                    # Does not filter any courses off of the list
+    if daysToPrune == []:
+        #print("no days to prune off")
         return listFromQuery
 
-    for course in listFromQuery:
-        if course[1] == 'OnLine':                               # If courses day of week is online      TODO: Verify that the index is where day offered is stored
-            prunedList.append(course)                           # Can always include online courses
+    #print("pruning off day")
+    for day in daysToPrune:
+        dayL = day.lower()
 
-        if course[1] != dayToPrune:                             # If courses day of the week isn't dayToPrune
-            prunedList.append(course)
+        if dayL == 'none':                                       # Does not filter any courses off of the list
+            return listFromQuery
+
+        for course in listFromQuery:
+            if course.day == 'OnLine':                           # If courses day of week is online      TODO: Verify that the index is where day offered is stored
+                #print("add online course")
+                prunedList.append(course)                        # Can always include online courses
+
+            if course.day != dayL:                             # If courses day of the week isn't dayToPrune
+                #print("add course from day currently open")
+                prunedList.append(course)
 
     return prunedList
 # =====================================================================================================================
@@ -110,9 +153,9 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
 
     for courseRow in listFromQuery:
-        courseStr = getCourseStr(courseRow[0])                    # TODO: See about not using getCourseStr if data allows
-
-        if courseStr not in coursesTaken:
+        #print("pruneOffPrevCourses")
+        if courseRow.getName.lower() not in coursesTaken:
+            #print("appending untaken course prunePrevCourses")
             prunedList.append(courseRow)
 
     return prunedList
@@ -122,12 +165,11 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
 # Removes courses from the query not present in given curriculum. Expects a list of rows from query
 def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
-
+    #print("entering pruneByCurriculum")
     for courseRow in listFromQuery:
-        courseStr = getCourseStr(courseRow[0])                      # TODO: See about not using getCourseStr if data allows
-
-        if courseStr in curriculum.coursesInCurriculum:
-            prunedList.append(listFromQuery[courseRow])
+        if courseRow.getName.lower() in curriculum.coursesInCurriculum:
+            #print("appending")
+            prunedList.append(courseRow)
 
     return prunedList
 # =====================================================================================================================
@@ -135,7 +177,11 @@ def pruneByCurriculum(listFromQuery, curriculum):
 # =====================================================================================================================
 # Applies all filters to the original query and returns filtered list.
 def filter (listFromQuery, plan, dayToPrune, curriculum):
+    print("Length of listFromQuery at start of filter: " + str(len(listFromQuery)))
     filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
+    print("Length of filter1 after prevCourses: " + str(len(filter1)))
     filter2 = pruneOffDay(filter1, dayToPrune)
+    print("Length of filter2 after pruneDay: " + str(len(filter2)))
     filter3 = pruneByCurriculum(filter2, curriculum)
+    print("Length of filter3 after curriculum: " + str(len(filter3)))
     return pruneByPrereq(filter3, plan.coursesTaken)

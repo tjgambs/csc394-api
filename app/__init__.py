@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPTokenAuth, HTTPBasicAuth
-from utils import prepare_json_response
+from app.utils import prepare_json_response
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
