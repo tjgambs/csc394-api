@@ -4,14 +4,14 @@
 class Plan:
     """class that represents a curriculum at a particular point during search."""
 
-    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx):
+    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, typesTaken):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
         self.termNum = int(termNum)                     # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
         self.currTermIdx = currTermIdx                  # Stores index of the current term we are preparing
         self.daysFilled = []                            # Days filled with courses in current term
-
+        self.typesTaken = typesTaken
         # Count of each type of course taken at this point in the plan. Used for goal checking.
         # Each index represents a type of course. Stores the int num of that type taken
         # Indexes correspond to the following course types
@@ -29,8 +29,7 @@ class Plan:
         # 11: Game and Real-Time Systems Courses
         # 12: Human-Computer Interaction Courses
         # 13: Advanced Courses
-
-        self.typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        
 
     @property
     def term_finished(self):
@@ -45,9 +44,6 @@ class Plan:
     # Once the term is full or options are exhausted it advances termNum
 
     def addCourse(self, courseInfo):
-
-        if courseInfo.getName in self.coursesTaken:
-            return
 
         # new code to account for the first plan which has no selectionOrder
         if len(self.selectionOrder) == self.currTermIdx:
