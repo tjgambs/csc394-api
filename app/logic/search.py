@@ -92,7 +92,8 @@ def automated(user):
         coursesTaken=user.getCoursesTaken, 
         termNum=user.getTerm,
         currTermIdx=0,
-        maxCourses=user.max_courses)
+        maxCourses=user.max_courses,
+        typesTaken=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     curriculum = user.curriculum
     frontier = PriorityQueue()
     frontier.put(start, 0)
@@ -110,43 +111,33 @@ def automated(user):
             break
         
         queryResults = TermCourses.getAvailableCourses(current_plan.termNum)
+
+
+
         filteredResults = filter(queryResults, current_plan, current_plan.daysFilled, curriculum)
 
-        # Restricting the filteredResults to a managable size.
-        limit = 3                                       # How many results to keep (4: still hadn't finished given 20min)
-        if len(filteredResults) > limit:
-            maxResults = limit
-        else:
-            maxResults = len(filteredResults)
-        restrictedResults = []
-        for i in range(0, maxResults):
-            restrictedResults.append(filteredResults[i])
 
 
-
-        for suggestedCourseInfo in restrictedResults:
-        #for suggestedCourseInfo in filteredResults:
+        for suggestedCourseInfo in filteredResults[:4]:
             suggestedPlan = Plan(
                 selectionOrder=copy.deepcopy(current_plan.selectionOrder), 
                 coursesTaken=copy.deepcopy(current_plan.coursesTaken), 
                 termNum=copy.deepcopy(current_plan.termNum),
                 currTermIdx=copy.deepcopy(current_plan.currTermIdx), 
-                maxCourses=user.max_courses)
+                maxCourses=user.max_courses,
+                typesTaken=copy.deepcopy(current_plan.typesTaken))
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
             new_cost = costSoFar.get(suggestedPlan._id, 0) + stdCost
 
-
             print suggestedPlan.selectionOrder
-
-            # Something beneath this is not working right, not sure what.
+            print suggestedPlan.typesTaken
 
             if suggestedPlan._id not in costSoFar or new_cost < costSoFar[suggestedPlan._id]:
                 costSoFar[suggestedPlan._id] = new_cost
                 priority = new_cost + (stdCost - heuristics(suggestedCourseInfo, suggestedPlan, user))
                 frontier.put(suggestedPlan, priority)
-                if suggestedPlan.term_finished:
-                    cameFrom[suggestedPlan._id] = suggestedPlan
+                cameFrom[suggestedPlan._id] = suggestedPlan
 
     return current_plan.selectionOrder
 # =====================================================================================================================
