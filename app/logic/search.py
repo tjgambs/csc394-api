@@ -129,7 +129,7 @@ def automated(user):
                 typesTaken=copy.deepcopy(current_plan.typesTaken))
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
-            new_cost = costSoFar.get(suggestedPlan._id, 0) + stdCost
+            new_cost = costSoFar.get(suggestedPlan._id, costSoFar.get(current_plan._id, 0)) + stdCost
 
             print suggestedPlan.selectionOrder
             print suggestedPlan.typesTaken
