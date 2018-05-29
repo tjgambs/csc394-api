@@ -13,35 +13,32 @@ def heuristics(course, suggestedPlan, user):
     available in the future, and the users need and preference for a particular type of elective"""
 
     score = course.score
-    #rarity = course.getH1                   # TODO: Update this once you know how the scores are stored in database
-    #unlocks = course.getH2
     bonus = 0
 
-    if (user.curriculum == CS):
-        # Weight courses that are preferred by the user
-        if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:  # If user needs more electives
-            userPref = int(user.getCSFocus)
-            if course.getName in user.curriculum.courseTypeDesignations[userPref]:  # Add bonus if course is preferred
-                bonus += 10
+    if user.getCurriculum == "CS":
+        userPref = int(user.getCSFocus)
 
-            # If the course is a member of the users most frequently taken elective course type and the user has not
-            # met the minimum number of courses from a single concentration requirement, add a weight
-            electivesCount = []
-            for i in range(5, 13):
-                electivesCount.append(suggestedPlan.typesTaken[i])
-            if max(electivesCount) < user.curriculum.gradReqs[5]:
-                if course in user.curriculum.courseTypeDesignations[electivesCount.index(max(electivesCount))]:
-                    bonus += 10
+        # Add bonus if course is preferred
+        if course.getName in user.curriculum.courseTypeDesignations[userPref]:
+            bonus += 30
 
+        # If the course is a member of the users most frequently taken elective course type add a weight
+        electivesCount = []
+        for i in range(5, 13):
+            electivesCount.append(suggestedPlan.typesTaken[i])
 
-    print("returning heuristic score")
+        maxIdx = electivesCount.index(max(electivesCount)) + 5
+
+        if course.getName in user.curriculum.courseTypeDesignations[maxIdx]:
+            bonus += 30
+
     return score + bonus
-    #return rarity + unlocks + bonus
 # =====================================================================================================================
 
 
 # =====================================================================================================================
 # Determines if the current_plan plan is a goal state
+# gradReq[2]: Major Electives, gradReq[3]: Open Electives, gradReq[4]: Capstone, gradReq[5]: Num courses req in same focus
 def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken \
         and curriculum.foundation_courses   <= plan.coursesTaken \
@@ -102,16 +99,17 @@ def automated(user):
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    stdCost = 120                # TODO: The arbitrary constant cost of selecting a class described above
+    stdCost = 160 # 120               # TODO: The arbitrary constant cost of selecting a class described above
 
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
  
     i = 0
     while not frontier.empty():
+        print("Plans Popped: " + str(i))
         print("Frontier Size: " + str(frontier.qsize()))
         current_plan = frontier.get()
-        print(current_plan.termNum)
+        i += 1
 
         if isGoal(current_plan, curriculum):
             break
@@ -122,7 +120,7 @@ def automated(user):
 
 
 
-        for suggestedCourseInfo in filteredResults[:4]:
+        for suggestedCourseInfo in filteredResults[:4]:                                         # number to keep
             suggestedPlan = Plan(
                 selectionOrder=copy.deepcopy(current_plan.selectionOrder), 
                 coursesTaken=copy.deepcopy(current_plan.coursesTaken), 
@@ -132,7 +130,7 @@ def automated(user):
                 typesTaken=copy.deepcopy(current_plan.typesTaken))
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
-            new_cost = costSoFar.get(suggestedPlan._id, 0) + stdCost
+            new_cost = costSoFar.get(suggestedPlan._id, costSoFar.get(current_plan._id, 0)) + stdCost
 
             print suggestedPlan.selectionOrder
             print suggestedPlan.typesTaken
@@ -142,6 +140,8 @@ def automated(user):
                 priority = new_cost + (stdCost - heuristics(suggestedCourseInfo, suggestedPlan, user))
                 frontier.put(suggestedPlan, priority)
                 cameFrom[suggestedPlan._id] = suggestedPlan
-
+    print("Solution: ")
+    print current_plan.selectionOrder
+    print current_plan.typesTaken
     return current_plan.selectionOrder
 # =====================================================================================================================

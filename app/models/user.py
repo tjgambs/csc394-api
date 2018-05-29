@@ -81,6 +81,13 @@ class User(db.Model):
         return int(self.number_credit_hours) / 4
 
     @property
+    def getCurriculum(self):
+        if self.graduate_degree == "Computer Science":
+            return "CS"
+        if self.graduate_degree == "Information Science":
+            return "IS"
+
+    @property
     def getCoursesTaken(self):
         return set()
 
