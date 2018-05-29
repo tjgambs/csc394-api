@@ -55,9 +55,10 @@ def isGoal(plan, curriculum):
 # =====================================================================================================================
 # Adds the given suggested course into the suggested plan. Then it updates the typesTaken lists inside of the Plan.
 def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
-    suggestedPlan.addCourse(suggestedCourseInfo)
-    courseTypeList = suggestedPlan.classifyCourse(suggestedCourseInfo, curriculum)
-    suggestedPlan.incrCourseType(courseTypeList, curriculum.gradReqs)
+    if suggestedCourseInfo.getName not in suggestedPlan.coursesTaken:                               # Ensure no duplication of courses
+        suggestedPlan.addCourse(suggestedCourseInfo)
+        courseTypeList = suggestedPlan.classifyCourse(suggestedCourseInfo, curriculum)
+        suggestedPlan.incrCourseType(courseTypeList, suggestedPlan.typesTaken, curriculum.gradReqs)
 
 # =====================================================================================================================
 def automated(user):
@@ -101,15 +102,30 @@ def automated(user):
 
     i = 0
     while not frontier.empty():
-
+        print("Frontier Size: " + str(frontier.qsize()))
         current_plan = frontier.get()
+        print(current_plan.termNum)
+
         if isGoal(current_plan, curriculum):
             break
         
         queryResults = TermCourses.getAvailableCourses(current_plan.termNum)
         filteredResults = filter(queryResults, current_plan, current_plan.daysFilled, curriculum)
 
-        for suggestedCourseInfo in filteredResults:
+        # Restricting the filteredResults to a managable size.
+        limit = 4                                                # How many results to keep (4 6:50-)
+        if len(filteredResults) > limit:
+            maxResults = limit
+        else:
+            maxResults = len(filteredResults)
+        restrictedResults = []
+        for i in range(0, maxResults):
+            restrictedResults.append(filteredResults[i])
+
+
+
+        for suggestedCourseInfo in restrictedResults:
+        #for suggestedCourseInfo in filteredResults:
             suggestedPlan = Plan(
                 selectionOrder=copy.deepcopy(current_plan.selectionOrder), 
                 coursesTaken=copy.deepcopy(current_plan.coursesTaken), 

@@ -14,13 +14,16 @@ class TermCourses(db.Model):
 
     @staticmethod
     def getAvailableCourses(stream):
-        quarter_range = 45
+        quarter_range = 30                                                  # This might need changed was 45 (975-1005)
         student_quarter = int(stream)
 
-        if student_quarter <= 1005:  # This was 1020
+        if student_quarter <= 1005:  # This was 1020 1005
             quarter = student_quarter
         else:
-            quarter = ((student_quarter % quarter_range) + 975)
+            #quarter = ((student_quarter % quarter_range) + 975)             # I think the const needs changed was 875
+            quarter = stream - 1010 + 975
+            if quarter >= 1010:
+                quarter = quarter - 1010 + 975
         stream = '0' + str(quarter) if quarter < 1000 else str(quarter)
 
         q = (db.session.query(
