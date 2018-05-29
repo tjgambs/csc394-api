@@ -16,11 +16,11 @@ def heuristics(course, suggestedPlan, user):
     #unlocks = course.getH2
     bonus = 0
 
-    ''' current_planly our users store this differently than im expecting check that 
-    if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:            # If user needs more electives
-        #userPref = user.elective
-        if course.getName in user.curriculum.courseTypeDesignations[user.elective]:  # Add bonus if course is preferred
-            bonus += 5
+    # Weight courses that are preferred by the user
+    if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:                       # If user needs more electives
+        userPref = user.elective
+        if course.getName in user.curriculum.courseTypeDesignations[user.elective]:     # Add bonus if course is preferred
+            bonus += 10
 
         # If the course is a member of the users most frequently taken elective course type and the user has not
         # met the minimum number of courses from a single concentration requirement, add a weight
@@ -29,8 +29,8 @@ def heuristics(course, suggestedPlan, user):
             electivesCount.append(suggestedPlan.typesTaken[i])
         if max(electivesCount) < user.curriculum.gradReqs[5]:
             if course in user.curriculum.courseTypeDesignation[electivesCount.index(max())]:
-                bonus += 5
-    '''
+                bonus += 10
+
     print("returning heuristic score")
     return score + bonus
     #return rarity + unlocks + bonus
@@ -99,7 +99,7 @@ def automated(user):
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    stdCost = 100                # TODO: The arbitrary constant cost of selecting a class described above
+    stdCost = 120                # TODO: The arbitrary constant cost of selecting a class described above
 
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
