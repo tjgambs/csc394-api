@@ -113,7 +113,7 @@ def automated(user):
         filteredResults = filter(queryResults, current_plan, current_plan.daysFilled, curriculum)
 
         # Restricting the filteredResults to a managable size.
-        limit = 4                                                # How many results to keep (4 6:50-)
+        limit = 3                                       # How many results to keep (4: still hadn't finished given 20min)
         if len(filteredResults) > limit:
             maxResults = limit
         else:
