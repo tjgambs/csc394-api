@@ -99,8 +99,11 @@ def automated(user):
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    stdCost = 100                # TODO: The arbitrary constant cost of selecting a class described above
+    stdCost = 1                # TODO: The arbitrary constant cost of selecting a class described above
 
+    terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
+    queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
+ 
     i = 0
     while not frontier.empty():
         print("Frontier Size: " + str(frontier.qsize()))
@@ -110,11 +113,9 @@ def automated(user):
         if isGoal(current_plan, curriculum):
             break
         
-        queryResults = TermCourses.getAvailableCourses(current_plan.termNum)
+        subsetResults = queryResults[TermCourses.convert_stream(current_plan.termNum)]
 
-
-
-        filteredResults = filter(queryResults, current_plan, current_plan.daysFilled, curriculum)
+        filteredResults = filter(subsetResults, current_plan, current_plan.daysFilled, curriculum)
 
 
 

@@ -17,14 +17,7 @@ class TermCourses(db.Model):
         """This function takes a stream and the moment it is greater than
         1005, then we wrap back around to 0975.
         """
-        quarter_range = 35
-        student_quarter = int(stream)
-        if student_quarter <= 1005:
-            quarter = student_quarter
-        else:
-            quarter = ((student_quarter % quarter_range) + 975)
-        stream = '0' + str(quarter) if quarter < 1000 else str(quarter)
-
+        stream = TermCourses.convert_stream(stream)
         q = (db.session.query(
             Csc394Courses.subject,
             Csc394Courses.course_nbr,
@@ -38,6 +31,17 @@ class TermCourses(db.Model):
             .order_by(Csc394Courses.score.desc()))
 
         return [TermCoursesEntity(row) for row in q.all()]
+
+    @staticmethod
+    def convert_stream(stream):
+        quarter_range = 35
+        student_quarter = int(stream)
+        if student_quarter <= 1005:
+            quarter = student_quarter
+        else:
+            quarter = ((student_quarter % quarter_range) + 975)
+        stream = '0' + str(quarter) if quarter < 1000 else str(quarter)
+        return stream
 
 
 class TermCoursesEntity(object):
