@@ -2,6 +2,7 @@ from Queue import PriorityQueue
 from app.models.plan import Plan
 from app.models.term_courses import TermCourses
 from app.logic.filterOptions import filter
+from app.models.curriculums import CS
 
 import copy
 
@@ -16,20 +17,22 @@ def heuristics(course, suggestedPlan, user):
     #unlocks = course.getH2
     bonus = 0
 
-    # Weight courses that are preferred by the user
-    if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:                       # If user needs more electives
-        userPref = user.elective
-        if course.getName in user.curriculum.courseTypeDesignations[user.elective]:     # Add bonus if course is preferred
-            bonus += 10
-
-        # If the course is a member of the users most frequently taken elective course type and the user has not
-        # met the minimum number of courses from a single concentration requirement, add a weight
-        electivesCount = ()
-        for i in range(5, 13):
-            electivesCount.append(suggestedPlan.typesTaken[i])
-        if max(electivesCount) < user.curriculum.gradReqs[5]:
-            if course in user.curriculum.courseTypeDesignation[electivesCount.index(max())]:
+    if (user.curriculum == CS):
+        # Weight courses that are preferred by the user
+        if suggestedPlan.typesTaken[2] < user.curriculum.gradReqs[2]:  # If user needs more electives
+            userPref = int(user.getCSFocus)
+            if course.getName in user.curriculum.courseTypeDesignations[userPref]:  # Add bonus if course is preferred
                 bonus += 10
+
+            # If the course is a member of the users most frequently taken elective course type and the user has not
+            # met the minimum number of courses from a single concentration requirement, add a weight
+            electivesCount = []
+            for i in range(5, 13):
+                electivesCount.append(suggestedPlan.typesTaken[i])
+            if max(electivesCount) < user.curriculum.gradReqs[5]:
+                if course in user.curriculum.courseTypeDesignations[electivesCount.index(max(electivesCount))]:
+                    bonus += 10
+
 
     print("returning heuristic score")
     return score + bonus

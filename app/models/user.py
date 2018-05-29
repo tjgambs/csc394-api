@@ -88,6 +88,29 @@ class User(db.Model):
     def getTerm(self):
         return '1005'
 
+    @property
+    def getDegree_concentration(self):
+        return self.graduate_degree_concentration
+
+    @property
+    def getCSFocus(self):
+        if self.graduate_degree_concentration == "Software and Systems Development":
+            return 5
+        if self.graduate_degree_concentration == "Theory":
+            return 6
+        if self.graduate_degree_concentration == "Data Science":
+            return 7
+        if self.graduate_degree_concentration == "Database Systems":
+            return 8
+        if self.graduate_degree_concentration == "Artificial Intelligence":
+            return 9
+        if self.graduate_degree_concentration == "Software Engineering":
+            return 10
+        if self.graduate_degree_concentration == "Game and Real-Time Systems":
+            return 11
+        if self.graduate_degree_concentration == "Human-Computer Interaction":
+            return 12
+
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])
     def data_by_token(token):
