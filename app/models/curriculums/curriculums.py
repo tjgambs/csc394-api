@@ -114,6 +114,8 @@ CS = Curriculum(**{
         'se 461', 'se 560', 'se 441',
         'csc 431', 'csc 534']),
     'gradReqs': [6, 5, 8, 0, 0, 4, 0]
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 })
 
 

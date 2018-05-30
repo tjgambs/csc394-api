@@ -88,13 +88,12 @@ class Plan:
     # the elective buckets.
     # TODO: test this
     def incrCourseType(self, courseTypes, typesTaken, gradReqs):
-        print("Incrementing Course Type")
         if courseTypes == list():                                   # Course doesn't fill a courseType don't increment
             return
 
         for potentialFit in courseTypes:                            # For each bucket that the course fits in
 
-            if potentialFit == 2:                       # This allows credit for both major e and focus
+            if potentialFit == 2:                                   # This allows credit for both major e and focus
                 typesTaken[2] += 1
 
             if potentialFit < 5:                                    # Course = Intro, Foundation, Major E, or Open E

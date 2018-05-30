@@ -81,12 +81,42 @@ class User(db.Model):
         return int(self.number_credit_hours) / 4
 
     @property
+    def getCurriculum(self):
+        if self.graduate_degree == "Computer Science":
+            return "CS"
+        if self.graduate_degree == "Information Science":
+            return "IS"
+
+    @property
     def getCoursesTaken(self):
         return set()
 
     @property
     def getTerm(self):
         return '1005'
+
+    @property
+    def getDegree_concentration(self):
+        return self.graduate_degree_concentration
+
+    @property
+    def getCSFocus(self):
+        if self.graduate_degree_concentration == "Software and Systems Development":
+            return 5
+        if self.graduate_degree_concentration == "Theory":
+            return 6
+        if self.graduate_degree_concentration == "Data Science":
+            return 7
+        if self.graduate_degree_concentration == "Database Systems":
+            return 8
+        if self.graduate_degree_concentration == "Artificial Intelligence":
+            return 9
+        if self.graduate_degree_concentration == "Software Engineering":
+            return 10
+        if self.graduate_degree_concentration == "Game and Real-Time Systems":
+            return 11
+        if self.graduate_degree_concentration == "Human-Computer Interaction":
+            return 12
 
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])
