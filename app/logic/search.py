@@ -20,7 +20,7 @@ def heuristics(course, suggestedPlan, user):
 
         # Add bonus if course is preferred
         if course.getName in user.curriculum.courseTypeDesignations[userPref]:
-            bonus += 20
+            bonus += 40
 
         # If the course is a member of the users most frequently taken elective course type add a weight
         electivesCount = []
@@ -30,7 +30,7 @@ def heuristics(course, suggestedPlan, user):
         maxIdx = electivesCount.index(max(electivesCount)) + 5
 
         if course.getName in user.curriculum.courseTypeDesignations[maxIdx]:
-            bonus += 40
+            bonus += 20
 
     return score + bonus
 # =====================================================================================================================
@@ -45,7 +45,8 @@ def isGoal(plan, curriculum):
         and curriculum.gradReqs[2]          <= plan.typesTaken[2] \
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
         and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
-        and curriculum.gradReqs[6]          <= plan.typesTaken[13]:
+        and curriculum.gradReqs[6]          <= plan.typesTaken[13]\
+        and plan.typesTaken[0] + plan.typesTaken[1] + plan.typesTaken[2] < 20:      #Experimental line limiting the num of courses taken
 
         for i in range(5, len(plan.typesTaken)):
             if curriculum.gradReqs[5]       <= plan.typesTaken[i]:
@@ -211,7 +212,7 @@ def automated(user):
 
 
 
-        for suggestedCourseInfo in filteredResults[:4]:                                         # number to keep
+        for suggestedCourseInfo in filteredResults[:8]:                                         # number to keep
             suggestedPlan = Plan(
                 selectionOrder=copy.deepcopy(current_plan.selectionOrder),
                 coursesTaken=copy.deepcopy(current_plan.coursesTaken),
