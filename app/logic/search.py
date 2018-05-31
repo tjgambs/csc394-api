@@ -212,7 +212,7 @@ def automated(user):
 
 
 
-        for suggestedCourseInfo in filteredResults[:8]:                                         # number to keep
+        for suggestedCourseInfo in filteredResults[:5]:                                         # number to keep
             suggestedPlan = Plan(
                 selectionOrder=copy.deepcopy(current_plan.selectionOrder),
                 coursesTaken=copy.deepcopy(current_plan.coursesTaken),
