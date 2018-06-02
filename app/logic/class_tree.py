@@ -6,7 +6,6 @@ import requests
 
 
 
-
 class class_list:
 
     def __init__(self):
@@ -14,10 +13,13 @@ class class_list:
         self.rarity_list = {}
         self.unlocks_list = {}
         self.score_list = {}
-        self.class_tree = { 'CSC 402': ['CSC 401'], 'CSC 403': ['CSC 402'], 'CSC 406': ['CSC 401'],'CSC 407': [('CSC 406', 'CSC 402')],'CSC 421': [('CSC 400', 'CSC 403')],
-                            'HCI 421': ['HCI 406'], 'HCI 422': ['HCI 440'], 'IS 422' : [('IS 421', 'CSC 451')],'CSC 423': ['IT 403'],'CSC 424'  : ['CSC 423'],'CSC 425': [('CSC 423', 'MAT 456')],
-                            'GAM 425': ['CSC 403'], 'GAM 427': ['GAM 426'], 'SE 430' : ['CSC 403'],'HCI 430': ['IT 411', 'HCI 440', 'HCI 441'],'TDC 431': ['TDC 405'],
-                            'CSC 431': ['CSC 401'],'SE 433' : ['CSC 403'], 'CSC 433': [['IT 403', 'CSC 401', 'IT 411']], 'CSC 435': [('CSC 403', 'CSC 407')], 'IS 435' : ['IS 421', 'SE 430'],
+        self.class_tree = { 'CSC 402': ['CSC 401'], 'CSC 403': ['CSC 402'], 'CSC 406': ['CSC 401'],
+                            'CSC 407': [('CSC 406', 'CSC 402')],'CSC 421': [('CSC 400', 'CSC 403')],
+                            'HCI 421': ['HCI 406'], 'HCI 422': ['HCI 440'], 'IS 422' : [('IS 421', 'CSC 451')],
+                            'CSC 423': ['IT 403'],'CSC 424'  : ['CSC 423'],'CSC 425': [('CSC 423', 'MAT 456')],
+                            'GAM 425': ['CSC 403'], 'GAM 427': ['GAM 426'], 'SE 430' : ['CSC 403'],
+                            'HCI 430': ['IT 411', 'HCI 440', 'HCI 441'],'TDC 431': ['TDC 405'], 'CSC 431': ['CSC 401'],
+                            'SE 433' : ['CSC 403'], 'CSC 433': [['IT 403', 'CSC 401', 'IT 411']], 'CSC 435': [('CSC 403', 'CSC 407')], 'IS 435' : ['IS 421', 'SE 430'],
                             'GPH 436': [('CSC 393', 'MAT 150')],'CSC 436': [('CSC 435', 'CSC 447')], 'GPH 438': [['GPH 425', 'GPH 469']], 'CSC 438': ['CSC 407'],'CSC 439': ['CSC 407'],
                             'CSC 440': ['CSC 403'],'SE 441': ['CSC 403'],'HCI 441': ['CSC 403'],'GEO 442': ['GEO 441'], 'CSC 443': [('CSC 403', 'CSC 407')], 'CSC 444': [('CSC 400', 'CSC 403')],
                             'GEO 445': ['GEO 441'], 'HCI 445': [('IT 403',  ['HCI 440', 'HCI 441'])],'GEO 446': ['GEO 441'],'GEO 447': ['GEO 441'],'CSC 447': [('CSC 403', 'CSC 406')],
@@ -54,7 +56,7 @@ class class_list:
                             'TDC 577': ['TDC 477'],'CSC 578': [[('CSC 412', 'CSC 478'), ('CSC 403', 'IS 467')]],
                             'IS 579': ['IS 430'],'SE 579': ['SE 450'],'CSC 580': ['SE 450'],'HCI 580': [('HCI 445', 'HCI 454')],
                             'GPH 580': [('GPH 469', 'GAM 470')],'SE 582': [['SE 477', 'IS 430', 'SE 430', 'SE 482', 'IS 485']],
-                            'CSC 583': ['CSC 480'],'CSC 587': [['CSC 403', 'HCI 460']],'CSC 588': ['CSC 461', 'SE 456', 'SE 450'],'IS 590': ['CSC 424'],'SE 591': ['SE 491'],
+                            'CSC 583': ['CSC 480'],'CSC 587': [['CSC 403', 'HCI 460']],'CSC 588': ['CSC 461', 'SE 456', 'SE 450'],'IS 590': ['CSC 424'],'SE 591': ['SE 491'], 'GAM 691' : [['GAM 474', 'SE 456']], 'GAM 690' : ['GAM 475']
 
  }
 

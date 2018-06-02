@@ -18,9 +18,15 @@ def heuristics(course, suggestedPlan, user):
     if user.getCurriculum == "CS":
         userPref = int(user.getCSFocus)
 
+        '''
+        if user.curriculum.courseTypeDesignations[2] > user.curriculum.gradReqs[2]:
+            if course.getName in user.curriculum.courseTypeDesignations[2]:
+                bonus -= 20
+        '''
+
         # Add bonus if course is preferred
         if course.getName in user.curriculum.courseTypeDesignations[userPref]:
-            bonus += 15
+            bonus += 10 # 15
 
         # If the course is a member of the users most frequently taken elective course type add a weight
         electivesCount = []
@@ -30,7 +36,7 @@ def heuristics(course, suggestedPlan, user):
         maxIdx = electivesCount.index(max(electivesCount)) + 5
 
         if course.getName in user.curriculum.courseTypeDesignations[maxIdx]:
-            bonus += 10
+            bonus += 10 # 10
 
     return score + bonus
 # ======================================================================================================================
@@ -38,7 +44,7 @@ def heuristics(course, suggestedPlan, user):
 # ======================================================================================================================
 # Determines if the current_plan plan is a goal state
 # gradReq[2]: Major Elect, gradReq[3]: Open Elect, gradReq[4]: Capstone, gradReq[5]: Num courses req in same focus
-def isGoal(plan, curriculum):
+def isGoal(plan, curriculum, courseLimit):
     types = plan.typesTaken
     if curriculum.introductory_courses      <= plan.coursesTaken \
         and curriculum.foundation_courses   <= plan.coursesTaken \
@@ -46,7 +52,7 @@ def isGoal(plan, curriculum):
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
         and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
         and curriculum.gradReqs[6]          <= plan.typesTaken[13]\
-        and types[0] + types[1] + types[2]  <  20:      # Max classes in a plan
+        and types[0] + types[1] + types[2]  <  courseLimit:      # Max classes in a plan
 
         for i in range(5, len(plan.typesTaken)):
             if curriculum.gradReqs[5]       <= plan.typesTaken[i]:
@@ -79,20 +85,24 @@ def automated(user):
     # Cost should represent how many quarters are needed to graduate. They should however be multiplied by some factor
     # so that they are larger than our heuristic values. Our heuristics should produce values for rarity that are 8 - #
     # of times offered in 8 quarters. So the values will range between 0-8. Unlocks could be anything between 0 and
-    # the # of total classes opened up by taking it. My expectation is that a class will have less than 16 unlocks. If
-    # this is not the case then the cost formula needs to be revised. We never want to over-estimate the cost of a path
-    # to graduation. 50 is chosen because it is the maximum value of h(n) seen in our data.
+    # the # of total classes opened up by taking it. Unlocks seems to range between 0-281. We opted to cap this number
+    # to 50. We decided to cap the unlocks score to 50 and in order to have rarity weigh as much as unlocks we opted to
+    # multiply its results by 6. The result is that rarity ranges between 0-42 and unlocks ranges from 0-50. We never
+    # want to over-estimate the cost of a path to graduation. 50 is chosen because it is the maximum value of h(n) seen
+    # in our data.
     # Should equal max(rarity) + max(unlocks) + bonus
-    # g(n) = (quarters x 50) or cost so far
-    # h(n) = 50 - (rarity + unlocks + bonus)
+    # g(n) = (quarters x stdCost) or cost so far
+    # h(n) = stdCost - (rarity + unlocks + bonus)
     # f(n) = g(n) + h(n)
-    # Record actual cost of a path as g(n) / 50 = number of quarters to graduate.
+    # Record actual cost of a path as g(n) / stdCost = number of quarters to graduate.
     # A course that is offered every quarter and unlocks nothing and does not match a preferred elective type will cost
-    # 50 which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes will
-    # appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it will be
-    # admissible. As long as unlocks is less than 16 we will never have negative costs therefore h(n) will be considered
-    # consistent.
-    # Heuristics may add as much as 25 to the score. The stdCost = 75
+    # stdCost which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes
+    # will appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it
+    # will be admissible. As long as stdCost is => h(n) we will never have negative costs therefore h(n) will be
+    # considered consistent.
+    # stdCost must = max(rarity) + max(unlocks) + max(bonus)
+
+
 
     start = Plan(
         selectionOrder = list(),
@@ -106,7 +116,9 @@ def automated(user):
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    stdCost = 75 # 120               # TODO: The arbitrary constant cost of selecting a class described above
+    stdCost = 70 # 70 for CS               # TODO: The arbitrary constant cost of selecting a class described above
+    courseLimit = 20 # max number of courses in a solution
+    maxCost = courseLimit * stdCost
 
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
@@ -118,14 +130,14 @@ def automated(user):
         current_plan = frontier.get()
         i += 1
 
-        if isGoal(current_plan, curriculum):
+        if isGoal(current_plan, curriculum, courseLimit):
             break
 
         subsetResults = queryResults[TermCourses.convert_stream(current_plan.termNum)]
         filteredResults = filter(subsetResults, current_plan, current_plan.daysFilled, curriculum)
 
 
-        for suggestedCourseInfo in filteredResults[:8]:                                         # number to keep
+        for suggestedCourseInfo in filteredResults[:5]:                                         # number to keep[:5] CS performs best with 5
             suggestedPlan = Plan(
                 selectionOrder  = copy.deepcopy(current_plan.selectionOrder),
                 coursesTaken    = copy.deepcopy(current_plan.coursesTaken),
@@ -137,8 +149,6 @@ def automated(user):
 
             new_cost = costSoFar.get(str(current_plan.coursesTaken), costSoFar.get(str(current_plan.coursesTaken), 0)) + stdCost
 
-
-            print(suggestedPlan.selectionOrder)
             print(suggestedPlan.typesTaken)
 
             if str(suggestedPlan.coursesTaken) not in costSoFar or new_cost < costSoFar[str(suggestedPlan.coursesTaken)]:

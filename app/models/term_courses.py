@@ -28,7 +28,7 @@ class TermCourses(db.Model):
                 DaysOffered.subject == Csc394Courses.subject,
                 DaysOffered.catalog_nbr == Csc394Courses.course_nbr)))
             .filter(DaysOffered.stream == stream)
-            .order_by(and_(Csc394Courses.score.desc(), Csc394Courses.id.desc())))  #We changed this from .order_by(Csc394Courses.score.desc())
+            .order_by(Csc394Courses.score.desc(), Csc394Courses.id.desc()))  #We changed this from .order_by(Csc394Courses.score.desc()) Csc394Courses.score.desc(), Csc394Courses.id.desc())
 
         return [TermCoursesEntity(row) for row in q.all()]
 
