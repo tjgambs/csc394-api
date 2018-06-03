@@ -12,6 +12,7 @@ class TermCourses(db.Model):
     stream = db.Column(db.String, primary_key=True)
     course_id = db.Column(db.String, primary_key=True)
 
+
     @staticmethod
     def getAvailableCourses(stream):
         """This function takes a stream and the moment it is greater than

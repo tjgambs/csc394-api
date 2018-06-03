@@ -75,7 +75,7 @@ class Plan:
 
     def classifyCourse(self, courseInfo, curriculum):
         courseType = list()
-        for i in range(0, len(curriculum.courseTypeDesignations)):
+        for i in range(0, 14):
             if courseInfo.getName in curriculum.courseTypeDesignations[i]:
                 courseType.append(i)
         return courseType
@@ -86,7 +86,7 @@ class Plan:
     # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses
     # from a single concentration required for graduation. Credit the earliest bucket. If those are full then look at
     # the elective buckets.
-    # TODO: test this
+
     def incrCourseType(self, courseTypes, typesTaken, gradReqs):
         if courseTypes == list():                                   # Course doesn't fill a courseType don't increment
             return
@@ -110,12 +110,11 @@ class Plan:
                     typesTaken[13] += 1                             # Increment advanced course bucket count
                     return
 
-            elif (potentialFit < 13) and (potentialFit >= 5):       # Course fits at least one CS focus area
+            elif (potentialFit < 13) and (potentialFit >= 5):       # Course fits at least one CS focus area credit all that match
                 for i in range(5, 13):                              # Loop through focus area buckets
-                    if typesTaken[i] < gradReqs[5]\
-                            and potentialFit == i:                 # If the bucket that matches class type isn't full
-                        typesTaken[i] += 1                          # Increment specific focus bucket
-                        return
+                    if potentialFit == i:                           # If course counts as a particular bucket, increment
+                        typesTaken[i] += 1                          # Credits each bucket a course counts for
+
 
             else:                                                   # Course didn't match
                 return
