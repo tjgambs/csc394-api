@@ -5,7 +5,7 @@ class Csc394Courses(db.Model):
 
     __tablename__ = "csc394_courses"
 
-    id = db.Column(db.String)
+    id = db.Column(db.String, primary_key=True)
     title = db.Column(db.String)
     subject = db.Column(db.String)
     course_nbr = db.Column(db.Integer)

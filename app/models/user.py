@@ -2,6 +2,7 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from app import app, db, cache
+from app.models.curriculums import CS
 import datetime
 
 
@@ -45,19 +46,77 @@ class User(db.Model):
 
     @property
     def serialize(self):
-        return {
-            'email': self.email,
-            'token': self.token,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'account_type': self.account_type_string,
-            'undergraduate_degree': self.undergraduate_degree,
-            'graduate_degree': self.graduate_degree,
-            'automation': self.automation,
-            'graduate_degree_concentration': self.graduate_degree_concentration,
-            'elective': self.elective,
-            'number_credit_hours': self.number_credit_hours
-        }
+        return {'email': self.email,
+                'token': self.token,
+                'first_name': self.first_name,
+                'last_name': self.last_name,
+                'account_type': self.account_type_string,
+                'undergraduate_degree': self.undergraduate_degree,
+                'graduate_degree': self.graduate_degree,
+                'automation': self.automation,
+                'graduate_degree_concentration': self.graduate_degree_concentration,
+                'elective': self.elective,
+                'number_credit_hours': self.number_credit_hours}
+
+    @property
+    def curriculum(self):
+        if self.graduate_degree == "Computer Science":
+            return CS
+        elif self.graduate_degree == "Information Science":
+            if self.graduate_degree_concentration == 'Business Analysis/Systems Analysis':
+                return IS_BA_SA
+            elif self.graduate_degree_concentration == 'Business Intelligence':
+                return IS_BI
+            elif self.graduate_degree_concentration == 'IT Enterprise Management':
+                return IS_IT
+            else:
+                raise ValueError('%s is not a supported concentration' %
+                                 self.graduate_degree_concentration)
+        else:
+            raise ValueError('%s is not a supported degree' %
+                             self.graduate_degree)
+
+    @property
+    def max_courses(self):
+        return int(self.number_credit_hours) / 4
+
+    @property
+    def getCurriculum(self):
+        if self.graduate_degree == "Computer Science":
+            return "CS"
+        if self.graduate_degree == "Information Science":
+            return "IS"
+
+    @property
+    def getCoursesTaken(self):
+        return set()
+
+    @property
+    def getTerm(self):
+        return '1005'
+
+    @property
+    def getDegree_concentration(self):
+        return self.graduate_degree_concentration
+
+    @property
+    def getCSFocus(self):
+        if self.graduate_degree_concentration == "Software and Systems Development":
+            return 5
+        if self.graduate_degree_concentration == "Theory":
+            return 6
+        if self.graduate_degree_concentration == "Data Science":
+            return 7
+        if self.graduate_degree_concentration == "Database Systems":
+            return 8
+        if self.graduate_degree_concentration == "Artificial Intelligence":
+            return 9
+        if self.graduate_degree_concentration == "Software Engineering":
+            return 10
+        if self.graduate_degree_concentration == "Game and Real-Time Systems":
+            return 11
+        if self.graduate_degree_concentration == "Human-Computer Interaction":
+            return 12
 
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])

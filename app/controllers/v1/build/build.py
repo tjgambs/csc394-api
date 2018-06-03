@@ -1,3 +1,4 @@
+from app.logic.search import automated
 
 from flask import abort, Blueprint, jsonify, request, g
 from app.utils import prepare_json_response
@@ -18,7 +19,7 @@ MOD = Blueprint("v1_build", __name__, url_prefix="/v1/build")
 @auth.login_required
 def auto_schedule():
 
-    data = g.user.serialize
+    data = automated(g.user)
 
     
     return jsonify(
