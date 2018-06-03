@@ -13,4 +13,4 @@ SECRET_KEY = '0656e2821f328bbd4576674e36be05bf35de91bf74ebdf9d'
 CACHE_TIMEOUT = 60 * 60 * 15  # 15 minutes
 
 # -- User Auth
-TOKEN_MAX_AGE = 60 * 60 * 24 * 7  # 1 Week
+TOKEN_MAX_AGE = 60 * 60 * 24 * 7 * 52 # 1 Year

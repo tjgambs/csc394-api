@@ -2,10 +2,10 @@ from queue import PriorityQueue
 import Plan
 import Student
 import Curriculum
-import GetOptions
-import getCourseString
+import getOptions
+import getCourseStr as gCS
 
-
+# =====================================================================================================================
 def heuristics(course, suggestedPlan, student):
     """ Assigns a score to the coursePlan based on the rarity of the course, the number of courses this one makes
     available in the future, and the students need and preference for a particular type of elective"""
@@ -16,7 +16,7 @@ def heuristics(course, suggestedPlan, student):
 
     if suggestedPlan.typesTaken[2] < student.curriculum.gradReqs[2]:            # If student needs more electives
         studentPref = student.elective_preference
-        courseStr = getCourseString(course)
+        courseStr = gCS.getCourseStr(course)
         if courseStr in student.curriculum.courseTypeDesignation[studentPref]:  # Add bonus if course is preferred
             bonus += 5
 
@@ -29,8 +29,10 @@ def heuristics(course, suggestedPlan, student):
             if course in student.curriculum.courseTypeDesignation[electivesCount.index(max())]:
                 bonus += 5
     return rarity + unlocks + bonus
+# =====================================================================================================================
 
 
+# =====================================================================================================================
 # Determines if the current plan is a goal state
 def isGoal(plan, curriculum):
     if curriculum.introductory_courses      <= plan.coursesTaken \
@@ -45,11 +47,13 @@ def isGoal(plan, curriculum):
                 return True
     else:
         return False
+# =====================================================================================================================
 
 
+# =====================================================================================================================
 # Determines which categories given course satisfies in a given curriculum.
 def classifyCourse (course, curriculum):
-    courseStr = getCourseString(course)
+    courseStr = gCS.getCourseStr(course)
     courseType = list()
 
     for i in range (0, len(curriculum.courseTypeDesignations)):
@@ -57,15 +61,19 @@ def classifyCourse (course, curriculum):
             courseType.append(i)
 
     return courseType
+# =====================================================================================================================
 
 
+# =====================================================================================================================
 # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses \
 # from a single concentration required for graduation
 # Credit the earliest bucket. If those are full then look at the elective buckets with the max courses taken and credit
 # that elective bucket
 #def incrCourseType
+# =====================================================================================================================
 
 
+# =====================================================================================================================
 def automated(student):
     """Takes a student object and generates the shortest path to graduation. """
 
@@ -78,9 +86,10 @@ def automated(student):
     # Cost should represent how many quarters are needed to graduate. They should however be multiplied by some factor
     # so that they are larger than our heuristic values. Our heuristics should produce values for rarity that are 16 - #
     # of times offered in 16 quarters. So the values will range between 0-16. Unlocks could be anything between 0 and
-    # the # of total classes. My expectation is that a class will have less than 16 unlocks. If this is not the case
-    # then the cost formula needs to be revised. We never want to over-estimate the cost of a path to graduation.
-    # 42 is chosen because it is a guess of the maximum value of h(n). Should equal max(rarity) + max(unlocks) + bonus
+    # the # of total classes opened up by taking it. My expectation is that a class will have less than 16 unlocks. If
+    # this is not the case then the cost formula needs to be revised. We never want to over-estimate the cost of a path
+    # to graduation. 42 is chosen because it is a guess of the maximum value of h(n).
+    # Should equal max(rarity) + max(unlocks) + bonus
     # g(n) = (quarters x 42) or cost so far
     # h(n) = 42 - (rarity + unlocks + bonus)
     # f(n) = g(n) + h(n)
@@ -108,7 +117,7 @@ def automated(student):
         if isGoal(current, curriculum):
             break
 
-        for suggestedCourse in GetOptions(student.curriculum, current):
+        for suggestedCourse in getOptions(student.curriculum, current):
 
             new_cost = costSoFar[current] + stdCost
             suggestedPlan = Plan(current.selectionOrder, current.coursesTaken, current.termNum, maxCourses)
@@ -122,3 +131,4 @@ def automated(student):
                 cameFrom[suggestedPlan] = current
 
     return current.selectionOrder
+# =====================================================================================================================
