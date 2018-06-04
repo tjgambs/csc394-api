@@ -4,6 +4,7 @@ from app.models.term_courses import TermCourses
 from app.logic.filterOptions import filter
 from app.models.curriculums import CS
 from operator import itemgetter, attrgetter
+from app.models.curriculums import *
 
 import copy
 
@@ -59,12 +60,28 @@ def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
 # ======================================================================================================================
 # Adds a bonus to the courses that match the users preference. Then it resorts the courses by the adjusted scores.
 def addPrefBonus(userPref, queryResults, terms, curriculum):
-    for term in terms:
-        for row in queryResults[term]:
-            if row.getName in curriculum.courseTypeDesignations[userPref]:
-                row.score += 20
-        queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
-    return queryResults
+    if curriculum == CS:
+        for term in terms:
+            for row in queryResults[term]:
+                if row.getName in curriculum.courseTypeDesignations[userPref]:
+                    row.score += 20
+            queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
+        return queryResults
+    else:
+        for term in terms:
+            for row in queryResults[term]:
+                if row.getName in curriculum.courseTypeDesignations[0]:
+                    row.score += 20
+                if row.getName in curriculum.courseTypeDesignations[1]:
+                    row.score += 30
+                if row.getName in curriculum.courseTypeDesignations[4]:
+                    row.score += 50
+                if row.getName in curriculum.courseTypeDesignations[13]:
+                    row.score += 50
+            queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
+        return queryResults
+
+
 
 
 
@@ -100,8 +117,8 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
-
-    userPref = 12
+    curriculum = IS_BA_SA
+    userPref = 1
     #userPref = int(user.getCSFocus)
     start = Plan(
         selectionOrder = list(),
@@ -110,22 +127,30 @@ def automated(user):
         currTermIdx = 0,
         maxCourses = user.max_courses,
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    curriculum = user.curriculum
+    #curriculum = user.curriculum
     frontier = PriorityQueue()
     frontier.put(start, 0)
     cameFrom = {}
     costSoFar = {}
-    stdCost = 70 # 70 for CS               # TODO: The arbitrary constant cost of selecting a class described above
-    courseLimit = 20 # max number of courses in a solution
+    stdCost = 100 # 70 for CS
+    courseLimit = 20                                                              # max number of courses in a solution
     maxCost = courseLimit * stdCost
 
+    # Store results of the query once for reuse later in search
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
 
     # Adds a bonus to courses matching users preferred elective type
     queryResults = addPrefBonus(userPref, queryResults, terms, curriculum)
 
-
+    '''
+    for term in terms:
+        print(term)
+        for row in queryResults[term]:
+            print(row.getName)
+    return
+    '''
+    
     i = 0
     while not frontier.empty():
         print("Plans Popped: " + str(i))
@@ -155,8 +180,15 @@ def automated(user):
             # Do not explore plans with excessive numbers of courses
             taken = suggestedPlan.typesTaken
             totCourses = taken[0] + taken[1] + taken[2] + taken [3] + taken[4] + taken[13]
-            if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 8:
-                continue
+
+            if curriculum == CS:
+                if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 8:
+                    print("in CS")
+                    continue
+            else:
+                if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 3:
+                    print("in IS")
+                    continue
 
             print(suggestedPlan.typesTaken)
 
