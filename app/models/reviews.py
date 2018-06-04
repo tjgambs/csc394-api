@@ -68,5 +68,4 @@ class Reviews(db.Model):
                 'teacher_grade': self.teacher_grade,
                 'teacher_rating_tags': self.teacher_rating_tags,
                 'unuseful_grouping': self.unuseful_grouping,
-                'useful_grouping': self.useful_grouping
-                }
+                'useful_grouping': self.useful_grouping}

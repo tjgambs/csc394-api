@@ -15,6 +15,10 @@ class Courses(db.Model):
     learning_domain = db.Column(db.String)
 
     @property
+    def name(self):
+        return self.subject + " " + self.catalog_nbr
+
+    @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {'title': self.title,
