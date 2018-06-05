@@ -121,9 +121,25 @@ def pruneByCurriculum(listFromQuery, curriculum):
 # =====================================================================================================================
 
 # =====================================================================================================================
+# Removes capstone course unless 10 IS courses have been taken.
+def pruneOffCapstone(listFromQuery, curriculum, totCourses):
+    prunedList = list()
+    for courseRow in listFromQuery:
+
+        if courseRow.getName.lower() in curriculum.coursesInCurriculum and courseRow.getName.lower() != 'is 577':
+            prunedList.append(courseRow)
+        elif courseRow.getName.lower() == 'is 577' and totCourses > 10:
+            print('added capstone')
+            prunedList.append(courseRow)
+
+    return prunedList
+# =====================================================================================================================
+
+# =====================================================================================================================
 # Applies all filters to the original query and returns filtered list.
-def filter (listFromQuery, plan, dayToPrune, curriculum):
+def filter (listFromQuery, plan, dayToPrune, curriculum, tot):
     filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
     filter2 = pruneOffDay(filter1, dayToPrune)
     filter3 = pruneByCurriculum(filter2, curriculum)
-    return pruneByPrereq(filter3, plan.coursesTaken)
+    filter4 = pruneOffCapstone(filter3, curriculum, tot)
+    return pruneByPrereq(filter4, plan.coursesTaken)
