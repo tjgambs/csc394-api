@@ -13,15 +13,24 @@ MOD = Blueprint("v1_user", __name__, url_prefix="/v1/user")
 @MOD.route('/add_to_wishlist/<course>/<title>', methods=['GET'])
 @auth.login_required
 def add_to_wishlist(course, title):
-    item = Wishlist(email=g.user.email, course=course, title=title)
-    db.session.add(item)
-    db.session.commit()
-    return jsonify(
-        prepare_json_response(
-            message="OK",
-            success=True
+    try:
+        item = Wishlist(email=g.user.email, course=course, title=title)
+        db.session.add(item)
+        db.session.commit()
+        return jsonify(
+            prepare_json_response(
+                message="OK",
+                success=True
+            )
         )
-    )
+    except:
+        db.session.rollback()
+        return jsonify(
+            prepare_json_response(
+                message="FAILURE",
+                success=False
+            )
+        )
 
 
 @MOD.route('/get_wishlist', methods=['GET'])
