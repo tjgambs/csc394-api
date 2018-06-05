@@ -3,14 +3,39 @@
 
 from flask import Blueprint, jsonify, request, abort, g
 from app.utils import prepare_json_response
-from app import auth
-
+from app.models.wishlist import Wishlist
+from app import app, db, auth, basicauth
 
 
 MOD = Blueprint("v1_user", __name__, url_prefix="/v1/user")
 
 
-@MOD.route('/add_to_wishlist/<id>', methods=['POST'])
+@MOD.route('/add_to_wishlist/<course>/<title>', methods=['GET'])
 @auth.login_required
-def add_to_wishlist(id):
-	pass
+def add_to_wishlist(course, title):
+    item = Wishlist(email=g.user.email, course=course, title=title)
+    db.session.add(item)
+    db.session.commit()
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True
+        )
+    )
+
+
+@MOD.route('/get_wishlist', methods=['GET'])
+@auth.login_required
+def get_wishlist():
+    q = (db.session.query(Wishlist)
+         .filter_by(email=g.user.email)
+         .order_by(Wishlist.course))
+    payload = [a.serialize for a in q.all()]
+    data = {'results': payload}
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=data
+        )
+    )

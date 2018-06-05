@@ -17,13 +17,16 @@ from app.controllers import default
 from app.controllers.v1.search import search
 from app.controllers.v1.build import build
 from app.controllers.v1.search import admin
+from app.controllers.v1.user import user
 from app.controllers.v1.auth import auth
+
 
 app.register_blueprint(default.MOD)
 app.register_blueprint(search.MOD)
 app.register_blueprint(build.MOD)
 app.register_blueprint(admin.MOD)
 app.register_blueprint(auth.MOD)
+app.register_blueprint(user.MOD)
 
 
 def add_cors_headers(response):
