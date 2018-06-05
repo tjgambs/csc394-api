@@ -2,8 +2,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPTokenAuth, HTTPBasicAuth
 from app.utils import prepare_json_response
 from flask import Flask, request, jsonify
+from flask.ext.cache import Cache
 
 app = Flask(__name__)
+cache = Cache(app,config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
 app.config.from_object("config")
 
 db = SQLAlchemy(app)
