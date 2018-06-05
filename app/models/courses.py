@@ -21,7 +21,8 @@ class Courses(db.Model):
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
-        return {'title': self.title,
+        return {'id': self.id,
+                'title': self.title,
                 'subject': self.subject,
                 'catalog_nbr': self.catalog_nbr,
                 'acad_career': self.acad_career,
