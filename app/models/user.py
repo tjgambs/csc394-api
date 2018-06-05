@@ -22,6 +22,7 @@ class User(db.Model):
     graduate_degree_concentration = db.Column(db.String())
     elective = db.Column(db.String())
     number_credit_hours = db.Column(db.String())
+    starting_quarter = db.Column(db.String())
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -56,7 +57,8 @@ class User(db.Model):
                 'automation': self.automation,
                 'graduate_degree_concentration': self.graduate_degree_concentration,
                 'elective': self.elective,
-                'number_credit_hours': self.number_credit_hours}
+                'number_credit_hours': self.number_credit_hours,
+                'starting_quarter': self.starting_quarter}
 
     @property
     def curriculum(self):
@@ -93,7 +95,13 @@ class User(db.Model):
 
     @property
     def getTerm(self):
-        return '1005'
+        if self.starting_quarter == 'Autumn':
+            return '1000'
+        if self.starting_quarter == 'Winter':
+            return '0980'
+        if self.starting_quarter == 'Spring':
+            return '0985'
+        return '0990'
 
     @property
     def getDegree_concentration(self):
