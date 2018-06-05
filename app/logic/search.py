@@ -2,8 +2,8 @@ from Queue import PriorityQueue
 from app.models.plan import Plan
 from app.models.term_courses import TermCourses
 from app.logic.filterOptions import filter
-from app.models.curriculums import CS
 from operator import itemgetter, attrgetter
+from app.models.curriculums import *
 
 import copy
 
@@ -12,14 +12,8 @@ import copy
 def heuristics(course, suggestedPlan, user):
     """ Assigns a score to the coursePlan based on the rarity of the course, the number of courses this one makes
     available in the future, and the users need and preference for a particular type of elective"""
-
     score = course.score
     bonus = 0
-
-    if user.getCurriculum == "CS":
-        if suggestedPlan.typesTaken[2] > 8:
-            bonus = 0
-
     return score + bonus
 # ======================================================================================================================
 
@@ -38,9 +32,9 @@ def isGoal(plan, curriculum, courseLimit, userPref):
 
 
         # If plan includes the number of courses in preferred bucket to graduate return True
-        if plan.typesTaken[userPref]:
-            if curriculum.gradReqs[5]       <= plan.typesTaken[userPref]:
-                return True
+        if curriculum.gradReqs[5] <= plan.typesTaken[userPref]:
+            return True
+
     else:
         return False
 # ======================================================================================================================
@@ -59,16 +53,57 @@ def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
 # ======================================================================================================================
 # Adds a bonus to the courses that match the users preference. Then it resorts the courses by the adjusted scores.
 def addPrefBonus(userPref, queryResults, terms, curriculum):
-    for term in terms:
-        for row in queryResults[term]:
-            if row.getName in curriculum.courseTypeDesignations[userPref]:
-                row.score += 20
-        queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
-    return queryResults
+    if curriculum is CS:
+        # Adding weights to increase importance of intro, foundation, and users focus.
+        for term in terms:
+            for row in queryResults[term]:
+                if userPref == 6:
+                    if row.getName in curriculum.courseTypeDesignations[6]:
+                        row.score += 45
+                if row.getName in curriculum.courseTypeDesignations[userPref]:
+                    row.score += 20
+                if row.getName in curriculum.courseTypeDesignations[1]:
+                    row.score += 40
+                if row.getName in curriculum.courseTypeDesignations[0]:
+                    row.score += 35
+            queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
+        return queryResults
+    else:
+        # Adding weights to increase importance of intro, foundation, advanced courses, and capstone.
+        for term in terms:
+            for row in queryResults[term]:
+                if curriculum == IS_DBA :
+                    if row.getName in curriculum.courseTypeDesignations[2]:
+                        row.score += 10
+                if curriculum == IS_BI:
+                    if row.getName in curriculum.courseTypeDesignations[13]:
+                        row.score += 20
+                if row.getName in curriculum.courseTypeDesignations[0]:
+                    row.score += 50
+                if row.getName in curriculum.courseTypeDesignations[1]:
+                    row.score += 25
+                if row.getName in curriculum.courseTypeDesignations[4]:
+                    row.score += 27
+                if row.getName in curriculum.courseTypeDesignations[13]:
+                    row.score += 50
+            queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
+        return queryResults
+
+
 
 
 
 # ======================================================================================================================
+
+# ======================================================================================================================
+# Returns a standard cost for selecting courses based on curriculum type. Allows room for heuristic adjustments
+def setStdCost(curriculum):
+    if curriculum is CS:
+        return 85
+    else:
+        return 100
+# ======================================================================================================================
+
 
 # ======================================================================================================================
 def automated(user):
@@ -100,9 +135,16 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
+    #curriculum = CS    # For Testing Purposes
+    #userPref = 6       # For Testing Purposes (IS must set this to 1)
 
-    userPref = 12
-    #userPref = int(user.getCSFocus)
+    curriculum = user.curriculum
+    #'''
+    if curriculum is CS:
+        userPref = int(user.getCSFocus)
+    else:
+        userPref == 1
+    #'''
     start = Plan(
         selectionOrder = list(),
         coursesTaken = user.getCoursesTaken,
@@ -110,28 +152,36 @@ def automated(user):
         currTermIdx = 0,
         maxCourses = user.max_courses,
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    curriculum = user.curriculum
+
     frontier = PriorityQueue()
     frontier.put(start, 0)
-    cameFrom = {}
     costSoFar = {}
-    stdCost = 70 # 70 for CS               # TODO: The arbitrary constant cost of selecting a class described above
-    courseLimit = 20 # max number of courses in a solution
-    maxCost = courseLimit * stdCost
+    stdCost = setStdCost(curriculum)
+    courseLimit = 20                                                              # max number of courses in a solution
 
+    # Store results of the query once for reuse later in search
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
 
     # Adds a bonus to courses matching users preferred elective type
     queryResults = addPrefBonus(userPref, queryResults, terms, curriculum)
 
+    '''
+    # For testing purposes
+    for term in terms:
+        print(term)
+        for row in queryResults[term]:
+            print(row.getName)
+            print(row.score)
+    return
+    '''
 
-    i = 0
+    i = 0                                                   # For testing purposes
     while not frontier.empty():
-        print("Plans Popped: " + str(i))
-        print("Frontier Size: " + str(frontier.qsize()))
+        print("Plans Popped: " + str(i))                    # For testing purposes
+        print("Frontier Size: " + str(frontier.qsize()))    # For testing purposes
         current_plan = frontier.get()
-        i += 1
+        i += 1                                              # For testing purposes
 
         if isGoal(current_plan, curriculum, courseLimit, userPref):
             break
@@ -140,7 +190,7 @@ def automated(user):
         filteredResults = filter(subsetResults, current_plan, current_plan.daysFilled, curriculum)
 
 
-        for suggestedCourseInfo in filteredResults[:5]:                    # number to keep[:5] CS performs best with 5
+        for suggestedCourseInfo in filteredResults[:8]:                    #  7 works well 8 works ok number to keep[:5] CS performs best with 5
             suggestedPlan = Plan(
                 selectionOrder  = copy.deepcopy(current_plan.selectionOrder),
                 coursesTaken    = copy.deepcopy(current_plan.coursesTaken),
@@ -155,20 +205,24 @@ def automated(user):
             # Do not explore plans with excessive numbers of courses
             taken = suggestedPlan.typesTaken
             totCourses = taken[0] + taken[1] + taken[2] + taken [3] + taken[4] + taken[13]
-            if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 8:
-                continue
 
-            print(suggestedPlan.typesTaken)
+            if curriculum == CS:
+                if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 8:
+                    continue
+            else:
+                if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 3:
+                    continue
+
+            print(suggestedPlan.typesTaken)    # For testing purposes
 
 
             if str(suggestedPlan.coursesTaken) not in costSoFar or new_cost < costSoFar[str(suggestedPlan.coursesTaken)]:
                 costSoFar[str(suggestedPlan.coursesTaken)] = new_cost
                 priority = -new_cost + heuristics(suggestedCourseInfo, suggestedPlan, user)
-                #priority = new_cost - heuristics(suggestedCourseInfo, suggestedPlan, user) # original
                 frontier.put(suggestedPlan, priority)
-                cameFrom[suggestedPlan._id] = current_plan                # cameFrom[suggestedPlan._id] = suggestedPlan
-    print ("Solution: ")
-    print (current_plan.selectionOrder)
-    print (current_plan.typesTaken)
+
+    print ("Solution: ")                        # For testing purposes
+    print (current_plan.selectionOrder)         # For testing purposes
+    print (current_plan.typesTaken)             # For testing purposes
     return current_plan.selectionOrder
 # =====================================================================================================================
