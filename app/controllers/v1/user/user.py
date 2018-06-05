@@ -33,6 +33,32 @@ def add_to_wishlist(course, title):
         )
 
 
+@MOD.route('/delete_from_wishlist/<course>/<title>', methods=['DELETE'])
+@auth.login_required
+def delete_from_wishlist(course, title):
+    try:
+        item = db.session.query(Wishlist).filter_by(
+            email=g.user.email, course=course, title=title)
+        if item:
+            item.delete()
+            db.session.commit()
+        return jsonify(
+            prepare_json_response(
+                message="OK",
+                success=True
+            )
+        )
+    except Exception, e:
+        print e
+        db.session.rollback()
+        return jsonify(
+            prepare_json_response(
+                message="FAILURE",
+                success=False
+            )
+        )
+
+
 @MOD.route('/get_wishlist', methods=['GET'])
 @auth.login_required
 def get_wishlist():
