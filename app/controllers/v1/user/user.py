@@ -48,8 +48,7 @@ def delete_from_wishlist(course, title):
                 success=True
             )
         )
-    except Exception, e:
-        print e
+    except:
         db.session.rollback()
         return jsonify(
             prepare_json_response(
