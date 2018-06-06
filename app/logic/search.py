@@ -22,13 +22,13 @@ def heuristics(course, suggestedPlan, user):
 # gradReq[2]: Major Elect, gradReq[3]: Open Elect, gradReq[4]: Capstone, gradReq[5]: Num courses req in same focus
 def isGoal(plan, curriculum, courseLimit, userPref):
     types = plan.typesTaken
-    if curriculum.introductory_courses      <= plan.coursesTaken \
-        and curriculum.foundation_courses   <= plan.coursesTaken \
-        and curriculum.gradReqs[2]          <= plan.typesTaken[2] \
-        and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
-        and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
-        and curriculum.gradReqs[6]          <= plan.typesTaken[13]\
-        and types[0] + types[1] + types[2]  <  courseLimit:                           # Max classes in a plan
+    if curriculum.introductory_courses      <=  plan.coursesTaken \
+        and curriculum.foundation_courses   <=  plan.coursesTaken \
+        and curriculum.gradReqs[2]          <=  plan.typesTaken[2] \
+        and curriculum.gradReqs[3]          <=  plan.typesTaken[3] \
+        and curriculum.gradReqs[4]          <=  plan.typesTaken[4] \
+        and curriculum.gradReqs[6]          <=  plan.typesTaken[13]\
+        and len(plan.coursesTaken)          <   courseLimit:                           # Max classes in a plan
 
         # If plan includes the number of courses in preferred bucket to graduate return True
         if curriculum.gradReqs[5] <= plan.typesTaken[userPref]:
@@ -180,6 +180,7 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
+
     # Should we disallow online courses?
     removeOnline = user.disallowOnline
 
@@ -194,7 +195,6 @@ def automated(user):
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-
 
     # Create null node
     start = Plan(
@@ -233,7 +233,7 @@ def automated(user):
 
         # If the search has gone on too long return an empty list so the user can restart the search
         if timedOut(plansPopped):
-            return list()
+            return list('Please see advisor', 'mon')
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -281,6 +281,5 @@ def automated(user):
                 priority = -new_cost + heuristics(suggestedCourseInfo, suggestedPlan, user)
                 frontier.put(suggestedPlan, priority)
 
-    print(curr_plan.typesTaken)
     return curr_plan.selectionsWithDay
 # ======================================================================================================================

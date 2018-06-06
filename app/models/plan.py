@@ -117,7 +117,6 @@ class Plan:
 
             if potentialFit < 5:                                    # Course = Intro, Foundation, Major E, or Open E
                 for i in range(0, 5):                               # Loop through buckets
-
                     if typesTaken[i] < gradReqs[i] \
                             and potentialFit == i \
                             and potentialFit != 2:                  # If the bucket that matches class type isn't full
