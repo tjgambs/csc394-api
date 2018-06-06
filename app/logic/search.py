@@ -73,6 +73,9 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                 if userPref == 7:
                     if row.getName in curriculum.courseTypeDesignations[7]:
                         row.score += 20
+                if userPref == 11:
+                    if row.getName in curriculum.courseTypeDesignations[11]:
+                        row.score += 20
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
     else:
@@ -191,7 +194,6 @@ def automated(user):
 
     # Setup Curriculum
     curriculum = user.curriculum
-
 
     # Setup concentration
     if curriculum is CS:
