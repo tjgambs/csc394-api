@@ -126,6 +126,8 @@ def update_user():
 @MOD.route("/user/token", methods=["GET"])
 @basicauth.login_required
 def token():
+    if request.method == 'OPTIONS':
+        return None
     token = g.user.generate_auth_token(app.config['TOKEN_MAX_AGE'])
     return jsonify(
         prepare_json_response(
