@@ -66,7 +66,7 @@ class User(db.Model):
     def curriculum(self):
         if self.graduate_degree == "Computer Science":
             return CS
-        elif self.graduate_degree == "Information Science":
+        elif self.graduate_degree == "Information Systems":
             if self.graduate_degree_concentration == 'Business Analysis/Systems Analysis':
                 return IS_BA_SA
             elif self.graduate_degree_concentration == 'Business Intelligence':
@@ -88,7 +88,7 @@ class User(db.Model):
     def getCurriculum(self):
         if self.graduate_degree == "Computer Science":
             return "CS"
-        if self.graduate_degree == "Information Science":
+        if self.graduate_degree == "Information Systems":
             return "IS"
 
     @property
