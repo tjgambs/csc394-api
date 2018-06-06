@@ -146,3 +146,10 @@ def filter (listFromQuery, plan, dayToPrune, curriculum, tot):
     filter3 = pruneByCurriculum(filter2, curriculum)
     filter4 = pruneOffCapstone(filter3, curriculum, tot)
     return pruneByPrereq(filter4, plan.coursesTaken)
+
+
+def manualFilter (listFromQuery, plan, dayToPrune, curriculum):
+    filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
+    filter2 = pruneOffDay(filter1, dayToPrune)
+    filter3 = pruneByCurriculum(filter2, curriculum)
+    return pruneByPrereq(filter3, plan.coursesTaken)

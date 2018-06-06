@@ -35,7 +35,6 @@ def admin_access(argument):
 
     return decorator
 
-
 @MOD.route('/user', methods=['POST'])
 def new_user():
     if request.method == 'OPTIONS':
