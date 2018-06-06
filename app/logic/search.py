@@ -131,16 +131,16 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
-    curriculum = CS    # For Testing Purposes
-    userPref = 9       # For Testing Purposes (IS must set this to 1)
+    #curriculum = CS    # For Testing Purposes
+    #userPref = 9       # For Testing Purposes (IS must set this to 1)
 
-    #curriculum = user.curriculum
-    '''
+    curriculum = user.curriculum
+    #'''
     if curriculum is CS:
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-    '''
+    #'''
 
     start = Plan(
         selectionOrder = list(),
