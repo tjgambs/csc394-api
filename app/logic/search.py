@@ -28,12 +28,11 @@ def isGoal(plan, curriculum, courseLimit, userPref):
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
         and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
         and curriculum.gradReqs[6]          <= plan.typesTaken[13]\
-        and types[0] + types[1] + types[2]  <  courseLimit:      # Max classes in a plan
+        and types[0] + types[1] + types[2]  <  courseLimit:                           # Max classes in a plan
 
         # If plan includes the number of courses in preferred bucket to graduate return True
         if curriculum.gradReqs[5] <= plan.typesTaken[userPref]:
             return True
-
     else:
         return False
 # ======================================================================================================================
@@ -50,7 +49,7 @@ def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
 
 
 # ======================================================================================================================
-# Adds a bonus to the courses that match the users preference. Then it resorts the courses by the adjusted scores.
+# Adds a bonus to various course types to emphasize them. Then it resorts the courses by the adjusted scores.
 def modifyHeuristics(userPref, queryResults, terms, curriculum):
     if curriculum is CS:
         # Adding weights to increase importance of intro, foundation, and users focus.
@@ -68,7 +67,9 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                 # Add an additional bonus to Major Elective Focus Courses if curriculum is CSC with Theory focus
                 if userPref == 6:
                     if row.getName in curriculum.courseTypeDesignations[6]:
-                        row.score += 100
+                        row.score += 30
+                    if row.getName in curriculum.courseTypeDesignations[6]:
+                        row.score += 50
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
     else:
@@ -95,7 +96,6 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                 if curriculum == IS_BI:
                     if row.getName in curriculum.courseTypeDesignations[13]:
                         row.score += 20
-
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
 # ======================================================================================================================
@@ -108,6 +108,45 @@ def setStdCost(curriculum):
         return 85
     else:
         return 100
+# ======================================================================================================================
+
+
+# ======================================================================================================================
+# If the student had an undergraduate degree type that matches their masters degree we can credit them for the intros
+def waiveCourses(startingPlan, undergrad, curriculum):
+    if undergrad == 'Computer Science' and curriculum is CS:
+        startingPlan.typesTaken[0] = 6
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    elif undergrad == 'Information Science' and curriculum is IS_BI:
+        startingPlan.typesTaken[0] = 2
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    elif undergrad == 'Information Science' and curriculum is IS_DBA:
+        startingPlan.typesTaken[0] = 1
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    else:
+        return startingPlan
+
+
+# ======================================================================================================================
+
+
+# ======================================================================================================================
+# Prevents the search from running too long and taking up too much memory.
+def timedOut(plansPopped):
+    if plansPopped >= 18000:
+        return True
+    else:
+        return False
+
 # ======================================================================================================================
 
 
@@ -137,10 +176,15 @@ def automated(user):
     # A course that is offered every quarter and unlocks nothing and does not match a preferred elective type will cost
     # stdCost which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes
     # will appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it
-    # will be admissible. As long as stdCost is => h(n) we will never have negative costs therefore h(n) will be
+    # will be admissible. As long as stdCost is >= h(n) we will never have negative costs therefore h(n) will be
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
+    # Should we disallow online courses?
+    removeOnline = user.disallowOnline
+
+    # Get students undergrad degree type
+    undergrad = user.undergraduate_degree
 
     # Setup Curriculum
     curriculum = user.curriculum
@@ -150,6 +194,7 @@ def automated(user):
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
+
 
     # Create null node
     start = Plan(
@@ -162,6 +207,9 @@ def automated(user):
         selectionsWithDay = list()
     )
 
+    # If the users undergrad type matches their graduate type waive introductory courses
+    start = waiveCourses(start, undergrad, curriculum)
+
     # Initialize variables
     frontier = PriorityQueue()
     frontier.put(start, 0)
@@ -173,13 +221,18 @@ def automated(user):
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
 
-    # Adds a bonus to courses matching users preferred elective type
+    # Modify the heuristic score of classes to emphasize certain course types and the students focus in particular
     queryResults = modifyHeuristics(userPref, queryResults, terms, curriculum)
 
-
+    plansPopped = 0
     while not frontier.empty():
         # Select current plan
         curr_plan = frontier.get()
+        plansPopped += 1
+
+        # If the search has gone on too long return an empty list so the user can restart the search
+        if timedOut(plansPopped):
+            return list()
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -191,7 +244,7 @@ def automated(user):
 
         # Filter the query removing courses that the student cannot take
         subsetResults = queryResults[TermCourses.convert_stream(curr_plan.termNum)]
-        filteredResults = filter(subsetResults, curr_plan, curr_plan.daysFilled, curriculum, tot)
+        filteredResults = filter(subsetResults, curr_plan, curr_plan.daysFilled, curriculum, tot, removeOnline)
 
         # Loop through the top 8 filtered results and try each suggested plan
         for suggestedCourseInfo in filteredResults[:8]:
@@ -208,7 +261,7 @@ def automated(user):
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
             # Calculate the true cost of the current plan (non heuristic)
-            new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0)) + stdCost
+            new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0))+stdCost
 
             # Do not explore plans with excessive numbers of courses
             taken = suggestedPlan.typesTaken
@@ -226,5 +279,6 @@ def automated(user):
                 priority = -new_cost + heuristics(suggestedCourseInfo, suggestedPlan, user)
                 frontier.put(suggestedPlan, priority)
 
+    print(curr_plan.typesTaken)
     return curr_plan.selectionsWithDay
-# =====================================================================================================================
+# ======================================================================================================================
