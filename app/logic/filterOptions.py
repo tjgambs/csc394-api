@@ -83,6 +83,7 @@ def pruneByPrereq (listFromQuery, coursesTaken):
                                                                 # satisfied
 # =====================================================================================================================
 
+
 # =====================================================================================================================
 # Removes courses from the query results that collide with another course taken
 # 'mon' 'tues' 'wed' 'thurs' 'OnLine'. Found in column 2 of results
@@ -100,6 +101,7 @@ def pruneOffDay(listFromQuery, daysToPrune):
     return prunedList
 # =====================================================================================================================
 
+
 # =====================================================================================================================
 # Removes courses from the query result that the student has already taken. Expects a list of rows from query
 def pruneOffPrevCourses (listFromQuery, coursesTaken):
@@ -109,6 +111,7 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
             prunedList.append(courseRow)
     return prunedList
 # =====================================================================================================================
+
 
 # =====================================================================================================================
 # Removes courses from the query not present in given curriculum. Expects a list of rows from query
@@ -120,20 +123,20 @@ def pruneByCurriculum(listFromQuery, curriculum):
     return prunedList
 # =====================================================================================================================
 
+
 # =====================================================================================================================
 # Removes capstone course unless 10 IS courses have been taken.
 def pruneOffCapstone(listFromQuery, curriculum, totCourses):
     prunedList = list()
     for courseRow in listFromQuery:
-
         if courseRow.getName.lower() in curriculum.coursesInCurriculum and courseRow.getName.lower() != 'is 577':
             prunedList.append(courseRow)
         elif courseRow.getName.lower() == 'is 577' and totCourses > 10:
-            print('added capstone')
             prunedList.append(courseRow)
 
     return prunedList
 # =====================================================================================================================
+
 
 # =====================================================================================================================
 # Applies all filters to the original query and returns filtered list.

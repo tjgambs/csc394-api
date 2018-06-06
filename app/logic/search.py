@@ -56,35 +56,46 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
         # Adding weights to increase importance of intro, foundation, and users focus.
         for term in terms:
             for row in queryResults[term]:
-                if userPref == 6:
-                    if row.getName in curriculum.courseTypeDesignations[6]:
-                        row.score += 45
-                if row.getName in curriculum.courseTypeDesignations[userPref]:
-                    row.score += 20
-                if row.getName in curriculum.courseTypeDesignations[1]:
-                    row.score += 40
+                # Add a bonus to Intro Courses
                 if row.getName in curriculum.courseTypeDesignations[0]:
                     row.score += 35
+                # Add a bonus to Foundation Courses
+                if row.getName in curriculum.courseTypeDesignations[1]:
+                    row.score += 40
+                # Add a bonus to Major Elective Focus Courses
+                if row.getName in curriculum.courseTypeDesignations[userPref]:
+                    row.score += 20
+                # Add an additional bonus to Major Elective Focus Courses if curriculum is CSC with Theory focus
+                if userPref == 6:
+                    if row.getName in curriculum.courseTypeDesignations[6]:
+                        row.score += 100
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
     else:
         # Adding weights to increase importance of intro, foundation, advanced courses, and capstone.
         for term in terms:
             for row in queryResults[term]:
+                # Add a bonus to Intro Courses
+                if row.getName in curriculum.courseTypeDesignations[0]:
+                    row.score += 50
+                # Add a bonus to Foundation Courses
+                if row.getName in curriculum.courseTypeDesignations[1]:
+                    row.score += 25
+                # Add a bonus to Major Elective Courses if the curriculum is IS_DBA
                 if curriculum == IS_DBA :
                     if row.getName in curriculum.courseTypeDesignations[2]:
                         row.score += 10
+                # Add a bonus to Capstone Courses
+                if row.getName in curriculum.courseTypeDesignations[4]:
+                    row.score += 27
+                # Add a bonus to Advanced Courses
+                if row.getName in curriculum.courseTypeDesignations[13]:
+                    row.score += 50
+                # Add a bonus to Advanced Courses if the curriculum is IS_BI
                 if curriculum == IS_BI:
                     if row.getName in curriculum.courseTypeDesignations[13]:
                         row.score += 20
-                if row.getName in curriculum.courseTypeDesignations[0]:
-                    row.score += 50
-                if row.getName in curriculum.courseTypeDesignations[1]:
-                    row.score += 25
-                if row.getName in curriculum.courseTypeDesignations[4]:
-                    row.score += 27
-                if row.getName in curriculum.courseTypeDesignations[13]:
-                    row.score += 50
+
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
 # ======================================================================================================================
@@ -130,24 +141,28 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
-    #curriculum = CS    # For Testing Purposes
-    #userPref = 12       # For Testing Purposes (IS must set this to 1)
 
+    # Setup Curriculum
     curriculum = user.curriculum
-    #'''
+
+    # Setup concentration
     if curriculum is CS:
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-    #'''
+
+    # Create null node
     start = Plan(
         selectionOrder = list(),
         coursesTaken = user.getCoursesTaken,
         termNum = user.getTerm,
         currTermIdx = 0,
         maxCourses = user.max_courses,
-        typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        selectionsWithDay = list()
+    )
 
+    # Initialize variables
     frontier = PriorityQueue()
     frontier.put(start, 0)
     costSoFar = {}
@@ -161,22 +176,10 @@ def automated(user):
     # Adds a bonus to courses matching users preferred elective type
     queryResults = modifyHeuristics(userPref, queryResults, terms, curriculum)
 
-    '''
-    # For testing purposes
-    for term in terms:
-        print(term)
-        for row in queryResults[term]:
-            print(row.getName)
-            print(row.score)
-    return
-    '''
 
-    i = 0                                                   # For testing purposes
     while not frontier.empty():
-        print("Plans Popped: " + str(i))                    # For testing purposes
-        print("Frontier Size: " + str(frontier.qsize()))    # For testing purposes
+        # Select current plan
         curr_plan = frontier.get()
-        i += 1                                              # For testing purposes
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -193,14 +196,18 @@ def automated(user):
         # Loop through the top 8 filtered results and try each suggested plan
         for suggestedCourseInfo in filteredResults[:8]:
             suggestedPlan = Plan(
-                selectionOrder  = copy.deepcopy(curr_plan.selectionOrder),
-                coursesTaken    = copy.deepcopy(curr_plan.coursesTaken),
-                termNum         = copy.deepcopy(curr_plan.termNum),
-                currTermIdx     = copy.deepcopy(curr_plan.currTermIdx),
-                maxCourses      = user.max_courses,
-                typesTaken      = copy.deepcopy(curr_plan.typesTaken))
+                selectionOrder      = copy.deepcopy(curr_plan.selectionOrder),
+                coursesTaken        = copy.deepcopy(curr_plan.coursesTaken),
+                termNum             = copy.deepcopy(curr_plan.termNum),
+                currTermIdx         = copy.deepcopy(curr_plan.currTermIdx),
+                maxCourses          = user.max_courses,
+                typesTaken          = copy.deepcopy(curr_plan.typesTaken),
+                selectionsWithDay   = copy.deepcopy(curr_plan.selectionsWithDay))
+
+            # Add suggested course to current plan
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
+            # Calculate the true cost of the current plan (non heuristic)
             new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0)) + stdCost
 
             # Do not explore plans with excessive numbers of courses
@@ -212,7 +219,6 @@ def automated(user):
             else:
                 if totCourses >= courseLimit or suggestedPlan.typesTaken[2] > 3:
                     continue
-            print(suggestedPlan.typesTaken)    # For testing purposes
 
             # Only explore a plan if it has not been seen or it is a better plan than a previously seen version
             if str(suggestedPlan.coursesTaken) not in costSoFar or new_cost < costSoFar[str(suggestedPlan.coursesTaken)]:
@@ -220,8 +226,5 @@ def automated(user):
                 priority = -new_cost + heuristics(suggestedCourseInfo, suggestedPlan, user)
                 frontier.put(suggestedPlan, priority)
 
-    print ("Solution: ")                        # For testing purposes
-    print (curr_plan.selectionOrder)            # For testing purposes
-    print (curr_plan.typesTaken)                # For testing purposes
-    return curr_plan.selectionOrder
+    return curr_plan.selectionsWithDay
 # =====================================================================================================================

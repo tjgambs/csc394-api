@@ -22,11 +22,11 @@ CS = Curriculum(**{
         'se 491', 'se 591', 'tdc 478',
         'tdc 484', 'tdc 568']),
     'theorys': set([
-        'csc 431', 'csc 440', 'csc 444',
-        'csc 489', 'csc 503', 'csc 521',
-        'csc 525', 'csc 531', 'csc 535',
-        'csc 547', 'csc 557', 'csc 580',
-        'csc 591', 'se 553']),
+        'csc 431', 'csc 440', 'csc 444_no',
+        'csc 489', 'csc 503_no', 'csc 521',
+        'csc 525', 'csc 531_no', 'csc 535_no',
+        'csc 547_no', 'csc 557_no', 'csc 580_no',
+        'csc 591_no', 'se 553_no']),
     'dataScis': set([
         'csc 423', 'csc 424', 'csc 433',
         'csc 465', 'csc 478', 'csc 481',
@@ -229,6 +229,8 @@ IS_BA_SA = Curriculum(**{
         'is 440', 'is 455', 'is 540',
         'is 556', 'is 565', 'is 578']),
     'gradReqs': [0, 4, 2, 1, 1, 0, 5]
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 })
 
 
@@ -344,6 +346,8 @@ IS_DBA = Curriculum(**{
         'ipd 460', 'ipd 463', 'is 452',
         'is 505', 'is 536', 'is 550']),
     'gradReqs': [1, 4, 3, 1, 1, 0, 4]
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 })
 
 
@@ -465,6 +469,8 @@ IS_BI = Curriculum(**{
         'ipd 460', 'is 452', 'is 456',
         'is 536', 'is 550']),
     'gradReqs': [2, 4, 3, 1, 1, 0, 4]
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 })
 
 IS_IT = Curriculum(**{
@@ -576,4 +582,6 @@ IS_IT = Curriculum(**{
         'is 550', 'is 560', 'is 565',
         'is 579', 'is 580']),
     'gradReqs': [0, 4, 3, 1, 1, 0, 4]
+# Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, courses \
+# from a single concentration required for graduation, and advanced_courses
 })
