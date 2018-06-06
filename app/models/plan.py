@@ -1,9 +1,10 @@
 # JP
 
-
+# =====================================================================================================================
 class Plan:
     """class that represents a curriculum at a particular point during search."""
 
+    # ==================================================================================================================
     def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, typesTaken, selectionsWithDay):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
@@ -14,10 +15,10 @@ class Plan:
         self.typesTaken = typesTaken                    # List tracking count of each course type
         self.selectionsWithDay = selectionsWithDay      # Same as selectionOrder but courses are tuples ('name', 'day')
 
-
         # typesTaken is a count of each type of course taken at this point in the plan. Used for goal checking.
         # Each index represents a type of course. Stores the int num of that type taken
         # Indexes correspond to the following course types
+
         # 0:  Introductory Courses
         # 1:  Foundation Courses
         # 2:  Major Elective Courses
@@ -32,8 +33,11 @@ class Plan:
         # 11: Game and Real-Time Systems Courses
         # 12: Human-Computer Interaction Courses
         # 13: Advanced Courses
-        
 
+    # ==================================================================================================================
+
+
+    # ==================================================================================================================
     @property
     def term_finished(self):
         return len(self.selectionOrder[self.currTermIdx]) == self.maxCourses
@@ -42,6 +46,10 @@ class Plan:
     def _id(self):
         return ''.join([y for x in self.selectionOrder for y in x])
 
+    # ==================================================================================================================
+
+
+    # ==================================================================================================================
     # Adds given course to the current plans term. If no course is available, then it leaves the term partially empty
     # if something else has been added to the term. If no options are available it instead creates an empty term.
     # Once the term is full or options are exhausted it advances termNum
@@ -76,9 +84,10 @@ class Plan:
             self.termNum = self.termNum + 5
             self.currTermIdx += 1
 
+    # ==================================================================================================================
 
 
-    # =====================================================================================================================
+    # ==================================================================================================================
     # Determines which categories given course satisfies in a given curriculum.
 
     def classifyCourse(self, courseInfo, curriculum):

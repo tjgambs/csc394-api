@@ -94,7 +94,7 @@ def pruneOffDay(listFromQuery, daysToPrune):
     for day in daysToPrune:
         day = day.lower()
         for course in listFromQuery:
-            if course.day == 'OnLine':                           # If courses day of week is online
+            if course.day == 'online':                           # If courses day of week is online
                 prunedList.append(course)                        # Can always include online courses
             elif course.day != day:                              # If courses day of the week isn't dayToPrune
                 prunedList.append(course)
@@ -133,16 +133,15 @@ def pruneOffCapstone(listFromQuery, curriculum, totCourses):
             prunedList.append(courseRow)
         elif courseRow.getName.lower() == 'is 577' and totCourses > 10:
             prunedList.append(courseRow)
-
     return prunedList
 # =====================================================================================================================
 
 
 # =====================================================================================================================
 # Applies all filters to the original query and returns filtered list.
-def filter (listFromQuery, plan, dayToPrune, curriculum, tot):
+def filter (listFromQuery, plan, dayToPrune, curriculum, totCourses):
     filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
     filter2 = pruneOffDay(filter1, dayToPrune)
     filter3 = pruneByCurriculum(filter2, curriculum)
-    filter4 = pruneOffCapstone(filter3, curriculum, tot)
+    filter4 = pruneOffCapstone(filter3, curriculum, totCourses)
     return pruneByPrereq(filter4, plan.coursesTaken)

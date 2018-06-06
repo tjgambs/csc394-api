@@ -28,12 +28,11 @@ def isGoal(plan, curriculum, courseLimit, userPref):
         and curriculum.gradReqs[3]          <= plan.typesTaken[3] \
         and curriculum.gradReqs[4]          <= plan.typesTaken[4] \
         and curriculum.gradReqs[6]          <= plan.typesTaken[13]\
-        and types[0] + types[1] + types[2]  <  courseLimit:      # Max classes in a plan
+        and types[0] + types[1] + types[2]  <  courseLimit:                           # Max classes in a plan
 
         # If plan includes the number of courses in preferred bucket to graduate return True
         if curriculum.gradReqs[5] <= plan.typesTaken[userPref]:
             return True
-
     else:
         return False
 # ======================================================================================================================
@@ -50,7 +49,7 @@ def addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum):
 
 
 # ======================================================================================================================
-# Adds a bonus to the courses that match the users preference. Then it resorts the courses by the adjusted scores.
+# Adds a bonus to various course types to emphasize them. Then it resorts the courses by the adjusted scores.
 def modifyHeuristics(userPref, queryResults, terms, curriculum):
     if curriculum is CS:
         # Adding weights to increase importance of intro, foundation, and users focus.
@@ -95,7 +94,6 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                 if curriculum == IS_BI:
                     if row.getName in curriculum.courseTypeDesignations[13]:
                         row.score += 20
-
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
 # ======================================================================================================================
@@ -173,9 +171,8 @@ def automated(user):
     terms = ['0975', '0980', '0985', '0990', '0995', '1000', '1005']
     queryResults = dict((term, TermCourses.getAvailableCourses(term)) for term in terms)
 
-    # Adds a bonus to courses matching users preferred elective type
+    # Modify the heuristic score of classes to emphasize certain course types and the students focus in particular
     queryResults = modifyHeuristics(userPref, queryResults, terms, curriculum)
-
 
     while not frontier.empty():
         # Select current plan
@@ -208,7 +205,7 @@ def automated(user):
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
             # Calculate the true cost of the current plan (non heuristic)
-            new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0)) + stdCost
+            new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0))+stdCost
 
             # Do not explore plans with excessive numbers of courses
             taken = suggestedPlan.typesTaken
