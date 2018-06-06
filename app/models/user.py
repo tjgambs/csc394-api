@@ -2,7 +2,7 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from app import app, db, cache
-from app.models.curriculums import CS
+from app.models.curriculums import *
 import datetime
 
 

@@ -58,7 +58,7 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
             for row in queryResults[term]:
                 if userPref == 6:
                     if row.getName in curriculum.courseTypeDesignations[6]:
-                        row.score += 45
+                        row.score += 100  #45
                 if row.getName in curriculum.courseTypeDesignations[userPref]:
                     row.score += 20
                 if row.getName in curriculum.courseTypeDesignations[1]:
@@ -102,6 +102,7 @@ def setStdCost(curriculum):
 
 # ======================================================================================================================
 def automated(user):
+    print('very top')
     """Takes a user object and generates the shortest path to graduation. """
 
     # Start should be a Plan() and will include any classes the user has already taken to this point. It should have
@@ -130,23 +131,26 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
-    #curriculum = CS    # For Testing Purposes
-    #userPref = 12       # For Testing Purposes (IS must set this to 1)
+    curriculum = CS    # For Testing Purposes
+    userPref = 9       # For Testing Purposes (IS must set this to 1)
 
-    curriculum = user.curriculum
-    #'''
+    #curriculum = user.curriculum
+    '''
     if curriculum is CS:
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-    #'''
+    '''
+
     start = Plan(
         selectionOrder = list(),
         coursesTaken = user.getCoursesTaken,
         termNum = user.getTerm,
         currTermIdx = 0,
         maxCourses = user.max_courses,
-        typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        selectionsWithDay = list()
+    )
 
     frontier = PriorityQueue()
     frontier.put(start, 0)
@@ -193,12 +197,14 @@ def automated(user):
         # Loop through the top 8 filtered results and try each suggested plan
         for suggestedCourseInfo in filteredResults[:8]:
             suggestedPlan = Plan(
-                selectionOrder  = copy.deepcopy(curr_plan.selectionOrder),
-                coursesTaken    = copy.deepcopy(curr_plan.coursesTaken),
-                termNum         = copy.deepcopy(curr_plan.termNum),
-                currTermIdx     = copy.deepcopy(curr_plan.currTermIdx),
-                maxCourses      = user.max_courses,
-                typesTaken      = copy.deepcopy(curr_plan.typesTaken))
+                selectionOrder      = copy.deepcopy(curr_plan.selectionOrder),
+                coursesTaken        = copy.deepcopy(curr_plan.coursesTaken),
+                termNum             = copy.deepcopy(curr_plan.termNum),
+                currTermIdx         = copy.deepcopy(curr_plan.currTermIdx),
+                maxCourses          = user.max_courses,
+                typesTaken          = copy.deepcopy(curr_plan.typesTaken),
+                selectionsWithDay   = copy.deepcopy(curr_plan.selectionsWithDay))
+
             addUpdateCourse(suggestedPlan, suggestedCourseInfo, curriculum)
 
             new_cost = costSoFar.get(str(curr_plan.coursesTaken), costSoFar.get(str(curr_plan.coursesTaken), 0)) + stdCost
@@ -223,5 +229,6 @@ def automated(user):
     print ("Solution: ")                        # For testing purposes
     print (curr_plan.selectionOrder)            # For testing purposes
     print (curr_plan.typesTaken)                # For testing purposes
-    return curr_plan.selectionOrder
+    #return curr_plan.selectionOrder
+    return curr_plan.selectionsWithDay
 # =====================================================================================================================

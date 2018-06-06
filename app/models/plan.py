@@ -4,7 +4,7 @@
 class Plan:
     """class that represents a curriculum at a particular point during search."""
 
-    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, typesTaken):
+    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, typesTaken, selectionsWithDay):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
         self.termNum = int(termNum)                     # Number representing term in the database increments by 5s
@@ -12,6 +12,7 @@ class Plan:
         self.currTermIdx = currTermIdx                  # Stores index of the current term we are preparing
         self.daysFilled = []                            # Days filled with courses in current term
         self.typesTaken = typesTaken
+        self.selectionsWithDay = selectionsWithDay      # Same as selectionOrder but courses are tuples ('name', 'day')
         # Count of each type of course taken at this point in the plan. Used for goal checking.
         # Each index represents a type of course. Stores the int num of that type taken
         # Indexes correspond to the following course types
@@ -48,7 +49,9 @@ class Plan:
         # new code to account for the first plan which has no selectionOrder
         if len(self.selectionOrder) == self.currTermIdx:
             self.selectionOrder.append([courseInfo.getName])
+            self.selectionsWithDay.append([(courseInfo.getName, courseInfo.day)])
             self.coursesTaken.add(courseInfo.getName)
+
             if len(self.daysFilled) >= self.maxCourses:                 # Clears the daysFilled when we change terms
                 self.daysFilled = [courseInfo.day]
             else:
@@ -57,7 +60,9 @@ class Plan:
         # There is room for a class and we have been handed a class
         elif len(self.selectionOrder[self.currTermIdx]) < self.maxCourses:
             self.selectionOrder[self.currTermIdx].append(courseInfo.getName)
+            self.selectionsWithDay[self.currTermIdx].append((courseInfo.getName, courseInfo.day))
             self.coursesTaken.add(courseInfo.getName)
+
             if len(self.daysFilled) >= self.maxCourses:                 # Clears the daysFilled when we change terms
                 self.daysFilled = [courseInfo.day]
             else:
@@ -65,6 +70,7 @@ class Plan:
 
         if len(self.selectionOrder[self.currTermIdx]) == self.maxCourses:
             self.selectionOrder.append([])
+            self.selectionsWithDay.append([])
             self.termNum = self.termNum + 5
             self.currTermIdx += 1
 
@@ -81,6 +87,7 @@ class Plan:
         return courseType
 
     # =====================================================================================================================
+
 
     # =====================================================================================================================
     # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses

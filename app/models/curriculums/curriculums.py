@@ -22,11 +22,11 @@ CS = Curriculum(**{
         'se 491', 'se 591', 'tdc 478',
         'tdc 484', 'tdc 568']),
     'theorys': set([
-        'csc 431', 'csc 440', 'csc 444',
-        'csc 489', 'csc 503', 'csc 521',
-        'csc 525', 'csc 531', 'csc 535',
-        'csc 547', 'csc 557', 'csc 580',
-        'csc 591', 'se 553']),
+        'csc 431', 'csc 440', 'csc 444_no',
+        'csc 489', 'csc 503_no', 'csc 521',
+        'csc 525', 'csc 531_no', 'csc 535_no',
+        'csc 547_no', 'csc 557_no', 'csc 580_no',
+        'csc 591_no', 'se 553_no']),
     'dataScis': set([
         'csc 423', 'csc 424', 'csc 433',
         'csc 465', 'csc 478', 'csc 481',
