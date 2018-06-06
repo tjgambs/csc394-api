@@ -83,6 +83,7 @@ class Plan:
             self.selectionsWithDay.append([])
             self.termNum = self.termNum + 5
             self.currTermIdx += 1
+            self.daysFilled = list()        #TODO: test this to prevent double selection
 
     # ==================================================================================================================
 
