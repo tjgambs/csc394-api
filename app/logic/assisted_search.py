@@ -9,8 +9,6 @@ from app.utils import prepare_json_response
 from app.models.user import User
 from app import app, db, auth, basicauth
 
-import copy
-
 def isGoal(plan, curriculum, courseLimit, userPref):
     types = plan.typesTaken
     if curriculum.introductory_courses      <= plan.coursesTaken \
