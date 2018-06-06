@@ -139,10 +139,3 @@ def pruneOffCapstone(listFromQuery, curriculum, totCourses):
 
 
 # =====================================================================================================================
-# Applies all filters to the original query and returns filtered list.
-def filter (listFromQuery, plan, dayToPrune, curriculum, tot):
-    filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
-    filter2 = pruneOffDay(filter1, dayToPrune)
-    filter3 = pruneByCurriculum(filter2, curriculum)
-    filter4 = pruneOffCapstone(filter3, curriculum, tot)
-    return pruneByPrereq(filter4, plan.coursesTaken)

@@ -1,6 +1,6 @@
 from app.models.plan import Plan
 from app.models.term_courses import TermCourses
-from app.logic.filterOptions import manualFilter
+from app.logic.filterOptions import filter
 from app.models.curriculums import CS
 from operator import itemgetter, attrgetter
 from functools import wraps
@@ -52,6 +52,10 @@ def assisted(user):
     wishList = request.json.get('wishList')
     #wishList = set()
 
+
+    # Should we disallow online courses?
+    removeOnline = user.disallowOnline
+
     getCSFocus = 5
 
     # Querying results to be looked at
@@ -83,8 +87,11 @@ def assisted(user):
     #if isGoal(current_plan, curriculum, len(coursesTaken), getCSFocus):
         return returnList
 
+
+    cur = current_plan.typesTaken
+    tot = cur[0] + cur[1] + cur[2] + cur[13]
     #The Query results are then filtered
-    filteredResults = manualFilter(queryResults[term], current_plan, current_plan.daysFilled, curriculum)
+    filteredResults = manualFilter(queryResults[term], current_plan, current_plan.daysFilled, curriculum, tot, removeOnline)
 
     #Selecting the Top 8 resutls to return
     endList = []
