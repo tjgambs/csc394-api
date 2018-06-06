@@ -110,6 +110,34 @@ def setStdCost(curriculum):
 
 
 # ======================================================================================================================
+# If the student had an undergraduate degree type that matches their masters degree we can credit them for the intros
+def waiveCourses(startingPlan, undergrad, curriculum):
+    if undergrad == 'Computer Science' and curriculum is CS:
+        startingPlan.typesTaken[0] = 6
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    elif undergrad == 'Information Science' and curriculum is IS_BI:
+        startingPlan.typesTaken[0] = 2
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    elif undergrad == 'Information Science' and curriculum is IS_DBA:
+        startingPlan.typesTaken[0] = 1
+        for course in curriculum.introductory_courses:
+            startingPlan.coursesTaken.add(course)
+        return startingPlan
+
+    else:
+        return startingPlan
+
+
+# ======================================================================================================================
+
+
+# ======================================================================================================================
 def automated(user):
     """Takes a user object and generates the shortest path to graduation. """
 
@@ -139,6 +167,11 @@ def automated(user):
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
+    # Should we disallow online courses?
+    removeOnline = user.disallowOnline
+
+    # Get students undergrad degree type
+    undergrad = user.undergraduate_degree
 
     # Setup Curriculum
     curriculum = user.curriculum
@@ -148,6 +181,7 @@ def automated(user):
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
+
 
     # Create null node
     start = Plan(
@@ -159,6 +193,9 @@ def automated(user):
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         selectionsWithDay = list()
     )
+
+    # If the users undergrad type matches their graduate type waive introductory courses
+    start = waiveCourses(start, undergrad, curriculum)
 
     # Initialize variables
     frontier = PriorityQueue()
@@ -174,9 +211,13 @@ def automated(user):
     # Modify the heuristic score of classes to emphasize certain course types and the students focus in particular
     queryResults = modifyHeuristics(userPref, queryResults, terms, curriculum)
 
+    i = 0
     while not frontier.empty():
         # Select current plan
         curr_plan = frontier.get()
+        i += 1
+        print(i)
+        print(frontier.qsize())
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -188,7 +229,7 @@ def automated(user):
 
         # Filter the query removing courses that the student cannot take
         subsetResults = queryResults[TermCourses.convert_stream(curr_plan.termNum)]
-        filteredResults = filter(subsetResults, curr_plan, curr_plan.daysFilled, curriculum, tot)
+        filteredResults = filter(subsetResults, curr_plan, curr_plan.daysFilled, curriculum, tot, removeOnline)
 
         # Loop through the top 8 filtered results and try each suggested plan
         for suggestedCourseInfo in filteredResults[:8]:

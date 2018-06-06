@@ -118,6 +118,10 @@ class User(db.Model):
         if self.graduate_degree_concentration == "Human-Computer Interaction":
             return 12
 
+    @property
+    def disallowOnline(self):
+        return True
+
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])
     def data_by_token(token):

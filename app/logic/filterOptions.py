@@ -99,10 +99,10 @@ def pruneOffDay(listFromQuery, daysToPrune):
             elif course.day != day:                              # If courses day of the week isn't dayToPrune
                 prunedList.append(course)
     return prunedList
-# =====================================================================================================================
+# ======================================================================================================================
 
 
-# =====================================================================================================================
+# ======================================================================================================================
 # Removes courses from the query result that the student has already taken. Expects a list of rows from query
 def pruneOffPrevCourses (listFromQuery, coursesTaken):
     prunedList = list()
@@ -110,10 +110,10 @@ def pruneOffPrevCourses (listFromQuery, coursesTaken):
         if courseRow.getName.lower() not in coursesTaken:
             prunedList.append(courseRow)
     return prunedList
-# =====================================================================================================================
+# ======================================================================================================================
 
 
-# =====================================================================================================================
+# ======================================================================================================================
 # Removes courses from the query not present in given curriculum. Expects a list of rows from query
 def pruneByCurriculum(listFromQuery, curriculum):
     prunedList = list()
@@ -121,10 +121,10 @@ def pruneByCurriculum(listFromQuery, curriculum):
         if courseRow.getName.lower() in curriculum.coursesInCurriculum:
             prunedList.append(courseRow)
     return prunedList
-# =====================================================================================================================
+# ======================================================================================================================
 
 
-# =====================================================================================================================
+# ======================================================================================================================
 # Removes capstone course unless 10 IS courses have been taken.
 def pruneOffCapstone(listFromQuery, curriculum, totCourses):
     prunedList = list()
@@ -134,14 +134,26 @@ def pruneOffCapstone(listFromQuery, curriculum, totCourses):
         elif courseRow.getName.lower() == 'is 577' and totCourses > 10:
             prunedList.append(courseRow)
     return prunedList
-# =====================================================================================================================
+# ======================================================================================================================
 
 
-# =====================================================================================================================
+# ======================================================================================================================
+# Removes courses from the query not present in given curriculum. Expects a list of rows from query
+def pruneRemoveOnline(listFromQuery, removeOnline):
+    prunedList = list()
+    for courseRow in listFromQuery:
+        if courseRow.day.lower() != 'online':
+            prunedList.append(courseRow)
+    return prunedList
+# ======================================================================================================================
+
+
+# ======================================================================================================================
 # Applies all filters to the original query and returns filtered list.
-def filter (listFromQuery, plan, dayToPrune, curriculum, totCourses):
+def filter (listFromQuery, plan, dayToPrune, curriculum, totCourses, removeOnline):
     filter1 = pruneOffPrevCourses(listFromQuery, plan.coursesTaken)
     filter2 = pruneOffDay(filter1, dayToPrune)
     filter3 = pruneByCurriculum(filter2, curriculum)
     filter4 = pruneOffCapstone(filter3, curriculum, totCourses)
-    return pruneByPrereq(filter4, plan.coursesTaken)
+    filter5 = pruneRemoveOnline(filter4,removeOnline)
+    return pruneByPrereq(filter5, plan.coursesTaken)

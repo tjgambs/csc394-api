@@ -97,10 +97,10 @@ class Plan:
                 courseType.append(i)
         return courseType
 
-    # =====================================================================================================================
+    # ==================================================================================================================
 
 
-    # =====================================================================================================================
+    # ==================================================================================================================
     # Indexes correspond to the number of intro, foundation, major electives, open electives, capstones, and courses
     # from a single concentration required for graduation. Credit the earliest bucket. If those are full then look at
     # the elective buckets.
@@ -128,7 +128,7 @@ class Plan:
                     typesTaken[13] += 1                             # Increment advanced course bucket count
                     return
 
-            elif (potentialFit < 13) and (potentialFit >= 5):       # Course fits at least one CS focus area credit all that match
+            elif (potentialFit < 13) and (potentialFit >= 5):       # Credit CS Focus if course fits
                 for i in range(5, 13):                              # Loop through focus area buckets
                     if potentialFit == i:                           # If course counts as a particular bucket, increment
                         typesTaken[i] += 1                          # Credits each bucket a course counts for
@@ -136,7 +136,7 @@ class Plan:
 
             else:                                                   # Course didn't match
                 return
-    # =====================================================================================================================
+    # ==================================================================================================================
 
 
 
