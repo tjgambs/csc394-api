@@ -66,7 +66,7 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                     row.score += 20
                 # Add an additional bonus to Major Elective Focus Courses if curriculum is CSC with Theory focus
                 if userPref == 6:
-                    if row.getName in curriculum.courseTypeDesignations[6]:
+                    if row.getName in curriculum.courseTypeDesignations[0]:
                         row.score += 30
                     if row.getName in curriculum.courseTypeDesignations[6]:
                         row.score += 50
@@ -142,7 +142,7 @@ def waiveCourses(startingPlan, undergrad, curriculum):
 # ======================================================================================================================
 # Prevents the search from running too long and taking up too much memory.
 def timedOut(plansPopped):
-    if plansPopped >= 18000:
+    if plansPopped >= 15000:
         return True
     else:
         return False
@@ -182,20 +182,22 @@ def automated(user):
 
 
     # Should we disallow online courses?
-    removeOnline = user.disallowOnline
-
+    #removeOnline = user.disallowOnline
+    removeOnline = False
     # Get students undergrad degree type
-    undergrad = user.undergraduate_degree
-
+    #undergrad = user.undergraduate_degree
+    undergrad = 'Computer Science'
     # Setup Curriculum
-    curriculum = user.curriculum
-
+    #curriculum = user.curriculum
+    curriculum = CS
+    '''
     # Setup concentration
     if curriculum is CS:
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-
+    '''
+    userPref = 6
     # Create null node
     start = Plan(
         selectionOrder = list(),
@@ -203,7 +205,7 @@ def automated(user):
         termNum = user.getTerm,
         currTermIdx = 0,
         daysFilled = [],
-        maxCourses = user.max_courses,
+        maxCourses = 3, #user.max_courses,
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         selectionsWithDay = list()
     )
@@ -233,7 +235,7 @@ def automated(user):
 
         # If the search has gone on too long return an empty list so the user can restart the search
         if timedOut(plansPopped):
-            return list('Please see advisor', 'mon')
+            return list(('Please see advisor', 'mon'))
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -255,7 +257,7 @@ def automated(user):
                 termNum             = copy.deepcopy(curr_plan.termNum),
                 currTermIdx         = copy.deepcopy(curr_plan.currTermIdx),
                 daysFilled          = copy.deepcopy(curr_plan.daysFilled),
-                maxCourses          = user.max_courses,
+                maxCourses          = 3, #user.max_courses,
                 typesTaken          = copy.deepcopy(curr_plan.typesTaken),
                 selectionsWithDay   = copy.deepcopy(curr_plan.selectionsWithDay))
 
