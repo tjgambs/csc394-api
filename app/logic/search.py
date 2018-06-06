@@ -70,6 +70,9 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                         row.score += 30
                     if row.getName in curriculum.courseTypeDesignations[6]:
                         row.score += 50
+                if userPref == 7:
+                    if row.getName in curriculum.courseTypeDesignations[7]:
+                        row.score += 20
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
     else:
@@ -179,7 +182,6 @@ def automated(user):
     # will be admissible. As long as stdCost is >= h(n) we will never have negative costs therefore h(n) will be
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
-
 
     # Should we disallow online courses?
     removeOnline = user.disallowOnline
