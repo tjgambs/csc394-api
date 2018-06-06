@@ -120,7 +120,7 @@ class User(db.Model):
 
     @property
     def disallowOnline(self):
-        return True
+        return False
 
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])

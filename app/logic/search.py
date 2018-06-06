@@ -67,7 +67,9 @@ def modifyHeuristics(userPref, queryResults, terms, curriculum):
                 # Add an additional bonus to Major Elective Focus Courses if curriculum is CSC with Theory focus
                 if userPref == 6:
                     if row.getName in curriculum.courseTypeDesignations[6]:
-                        row.score += 100
+                        row.score += 30
+                    if row.getName in curriculum.courseTypeDesignations[6]:
+                        row.score += 50
             queryResults[term] = sorted(queryResults[term], key=attrgetter('score'), reverse=True)
         return queryResults
     else:
@@ -138,6 +140,17 @@ def waiveCourses(startingPlan, undergrad, curriculum):
 
 
 # ======================================================================================================================
+# Prevents the search from running too long and taking up too much memory.
+def timedOut(plansPopped):
+    if plansPopped >= 18000:
+        return True
+    else:
+        return False
+
+# ======================================================================================================================
+
+
+# ======================================================================================================================
 def automated(user):
     """Takes a user object and generates the shortest path to graduation. """
 
@@ -163,7 +176,7 @@ def automated(user):
     # A course that is offered every quarter and unlocks nothing and does not match a preferred elective type will cost
     # stdCost which is exactly what adding a class costs. Selecting something more rare, and/or unlocks more classes
     # will appear to cost less than a normal quarter. So the path will be an under-estimate of cost and therefore it
-    # will be admissible. As long as stdCost is => h(n) we will never have negative costs therefore h(n) will be
+    # will be admissible. As long as stdCost is >= h(n) we will never have negative costs therefore h(n) will be
     # considered consistent.
     # stdCost must = max(rarity) + max(unlocks) + max(bonus)
 
@@ -211,13 +224,15 @@ def automated(user):
     # Modify the heuristic score of classes to emphasize certain course types and the students focus in particular
     queryResults = modifyHeuristics(userPref, queryResults, terms, curriculum)
 
-    i = 0
+    plansPopped = 0
     while not frontier.empty():
         # Select current plan
         curr_plan = frontier.get()
-        i += 1
-        print(i)
-        print(frontier.qsize())
+        plansPopped += 1
+
+        # If the search has gone on too long return an empty list so the user can restart the search
+        if timedOut(plansPopped):
+            return list()
 
         # Goal Checking
         if isGoal(curr_plan, curriculum, courseLimit, userPref):
@@ -264,5 +279,6 @@ def automated(user):
                 priority = -new_cost + heuristics(suggestedCourseInfo, suggestedPlan, user)
                 frontier.put(suggestedPlan, priority)
 
+    print(curr_plan.typesTaken)
     return curr_plan.selectionsWithDay
-# =====================================================================================================================
+# ======================================================================================================================
