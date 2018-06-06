@@ -142,7 +142,9 @@ def pruneOffCapstone(listFromQuery, curriculum, totCourses):
 def pruneRemoveOnline(listFromQuery, removeOnline):
     prunedList = list()
     for courseRow in listFromQuery:
-        if courseRow.day.lower() != 'online':
+        if removeOnline and courseRow.day.lower() != 'online':
+            prunedList.append(courseRow)
+        elif not removeOnline:
             prunedList.append(courseRow)
     return prunedList
 # ======================================================================================================================

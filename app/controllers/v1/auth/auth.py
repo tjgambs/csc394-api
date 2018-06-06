@@ -95,6 +95,7 @@ def update_user():
     elective = request.json.get('elective')
     number_credit_hours = request.json.get('number_credit_hours')
     starting_quarter = request.json.get('starting_quarter')
+    disallow_online = request.json.get('disallow_online')
 
     not_null = [email, first_name, last_name]
     if any(n is None for n in not_null): 
@@ -110,6 +111,7 @@ def update_user():
     g.user.elective = elective
     g.user.number_credit_hours = number_credit_hours
     g.user.starting_quarter = starting_quarter
+    g.user.disallow_online = disallow_online
     db.session.commit()
 
     return jsonify(
