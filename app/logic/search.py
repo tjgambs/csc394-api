@@ -202,6 +202,7 @@ def automated(user):
         coursesTaken = user.getCoursesTaken,
         termNum = user.getTerm,
         currTermIdx = 0,
+        daysFilled = [],
         maxCourses = user.max_courses,
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         selectionsWithDay = list()
@@ -253,6 +254,7 @@ def automated(user):
                 coursesTaken        = copy.deepcopy(curr_plan.coursesTaken),
                 termNum             = copy.deepcopy(curr_plan.termNum),
                 currTermIdx         = copy.deepcopy(curr_plan.currTermIdx),
+                daysFilled          = copy.deepcopy(curr_plan.daysFilled),
                 maxCourses          = user.max_courses,
                 typesTaken          = copy.deepcopy(curr_plan.typesTaken),
                 selectionsWithDay   = copy.deepcopy(curr_plan.selectionsWithDay))
