@@ -91,13 +91,11 @@ def pruneOffDay(listFromQuery, daysToPrune):
     if daysToPrune == []:
         return listFromQuery
     prunedList = []
-    for day in daysToPrune:
-        day = day.lower()
-        for course in listFromQuery:
-            if course.day == 'online':                           # If courses day of week is online
-                prunedList.append(course)                        # Can always include online courses
-            elif course.day != day:                              # If courses day of the week isn't dayToPrune
-                prunedList.append(course)
+    for course in listFromQuery:
+        if course.day == 'online':                           # If courses day of week is online
+            prunedList.append(course)                        # Can always include online courses
+        elif course.day not in daysToPrune:                  # If courses day of the week isn't dayToPrune
+            prunedList.append(course)
     return prunedList
 # ======================================================================================================================
 

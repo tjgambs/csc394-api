@@ -39,7 +39,7 @@ def get_students():
 @admin_access([2])
 def get_accounts():
     q = (db.session.query(User)
-         .filter(User.account_type == 0 | User.account_type == 1)
+         .filter(User.account_type != 2)
          .order_by(User.first_name, User.last_name))
     payload = [a.serialize for a in q.all()]
 

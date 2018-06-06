@@ -5,13 +5,13 @@ class Plan:
     """class that represents a curriculum at a particular point during search."""
 
     # ==================================================================================================================
-    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, typesTaken, selectionsWithDay):
+    def __init__(self, selectionOrder, coursesTaken, termNum, maxCourses, currTermIdx, daysFilled, typesTaken, selectionsWithDay):
         self.selectionOrder = selectionOrder            # List of Lists. Inner lists represent quarters
         self.coursesTaken = coursesTaken                # Set of strings representing courses taken.  'csc300'
         self.termNum = int(termNum)                     # Number representing term in the database increments by 5s
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
         self.currTermIdx = currTermIdx                  # Stores index of the current term we are preparing
-        self.daysFilled = []                            # Days filled with courses in current term
+        self.daysFilled = daysFilled                    # Days filled with courses in current term
         self.typesTaken = typesTaken                    # List tracking count of each course type
         self.selectionsWithDay = selectionsWithDay      # Same as selectionOrder but courses are tuples ('name', 'day')
 
@@ -83,6 +83,7 @@ class Plan:
             self.selectionsWithDay.append([])
             self.termNum = self.termNum + 5
             self.currTermIdx += 1
+            self.daysFilled = list()        #TODO: test this to prevent double selection
 
     # ==================================================================================================================
 
@@ -116,7 +117,6 @@ class Plan:
 
             if potentialFit < 5:                                    # Course = Intro, Foundation, Major E, or Open E
                 for i in range(0, 5):                               # Loop through buckets
-
                     if typesTaken[i] < gradReqs[i] \
                             and potentialFit == i \
                             and potentialFit != 2:                  # If the bucket that matches class type isn't full
