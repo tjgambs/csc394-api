@@ -182,22 +182,22 @@ def automated(user):
 
 
     # Should we disallow online courses?
-    #removeOnline = user.disallowOnline
-    removeOnline = False
+    removeOnline = user.disallowOnline
+
     # Get students undergrad degree type
-    #undergrad = user.undergraduate_degree
-    undergrad = 'Computer Science'
+    undergrad = user.undergraduate_degree
+
     # Setup Curriculum
-    #curriculum = user.curriculum
-    curriculum = CS
-    '''
+    curriculum = user.curriculum
+
+
     # Setup concentration
     if curriculum is CS:
         userPref = int(user.getCSFocus)
     else:
         userPref = 1
-    '''
-    userPref = 6
+
+
     # Create null node
     start = Plan(
         selectionOrder = list(),
@@ -205,7 +205,7 @@ def automated(user):
         termNum = user.getTerm,
         currTermIdx = 0,
         daysFilled = [],
-        maxCourses = 3, #user.max_courses,
+        maxCourses = user.max_courses,
         typesTaken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         selectionsWithDay = list()
     )
@@ -257,7 +257,7 @@ def automated(user):
                 termNum             = copy.deepcopy(curr_plan.termNum),
                 currTermIdx         = copy.deepcopy(curr_plan.currTermIdx),
                 daysFilled          = copy.deepcopy(curr_plan.daysFilled),
-                maxCourses          = 3, #user.max_courses,
+                maxCourses          = user.max_courses,
                 typesTaken          = copy.deepcopy(curr_plan.typesTaken),
                 selectionsWithDay   = copy.deepcopy(curr_plan.selectionsWithDay))
 
