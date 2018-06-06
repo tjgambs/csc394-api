@@ -68,6 +68,23 @@ def by_subject_and_number(subject, number, stream):
     )
 
 
+@MOD.route("/by_subject_number/<subject>/<number>", methods=["GET"])
+def by_subject_and_number_no_stream(subject, number):
+    q = (db.session.query(Courses)
+         .filter((Courses.subject.ilike(subject))
+                 & (Courses.catalog_nbr.like(number + '%')))
+         .order_by(Courses.catalog_nbr))
+    payload = [a.serialize for a in q.all()]
+    data = {'results': payload}
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=data
+        )
+    )
+
+
 @MOD.route("/by_subject/<subject>/<stream>", methods=["GET"])
 def by_subject(subject, stream):
     sq = (db.session.query(TermCourses.course_id)
@@ -87,6 +104,22 @@ def by_subject(subject, stream):
     )
 
 
+@MOD.route("/by_subject/<subject>", methods=["GET"])
+def by_subject_no_stream(subject):
+    q = (db.session.query(Courses)
+         .filter((Courses.subject.ilike(subject)))
+         .order_by(Courses.catalog_nbr))
+    payload = [a.serialize for a in q.all()]
+    data = {'results': payload}
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=data
+        )
+    )
+
+
 @MOD.route("/by_number/<number>/<stream>", methods=["GET"])
 def by_number(number, stream):
     sq = (db.session.query(TermCourses.course_id)
@@ -94,6 +127,22 @@ def by_number(number, stream):
     q = (db.session.query(Courses)
          .filter(Courses.id.in_(sq)
                  & (Courses.catalog_nbr.like(number + '%')))
+         .order_by(Courses.subject, Courses.catalog_nbr))
+    payload = [a.serialize for a in q.all()]
+    data = {'results': payload}
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=data
+        )
+    )
+
+
+@MOD.route("/by_number/<number>", methods=["GET"])
+def by_number_no_stream(number):
+    q = (db.session.query(Courses)
+         .filter((Courses.catalog_nbr.like(number + '%')))
          .order_by(Courses.subject, Courses.catalog_nbr))
     payload = [a.serialize for a in q.all()]
     data = {'results': payload}

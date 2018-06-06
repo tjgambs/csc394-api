@@ -15,13 +15,10 @@ from app.models.reviews import Reviews
 MOD = Blueprint("v1_build", __name__, url_prefix="/v1/build")
 
 
-@MOD.route("/auto_schedule", methods=["POST"])
+@MOD.route("/auto_schedule", methods=["GET"])
 @auth.login_required
 def auto_schedule():
-
-    data = automated(g.user)
-
-    
+    data = {'results': automated(g.user)}
     return jsonify(
         prepare_json_response(
             message="OK",
