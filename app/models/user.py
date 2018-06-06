@@ -1,7 +1,7 @@
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
-from app import app, db, cache
+from app import app, db
 from app.models.curriculums import *
 import datetime
 
@@ -133,7 +133,6 @@ class User(db.Model):
         return self.disallow_online
 
     @staticmethod
-    @cache.memoize(app.config["CACHE_TIMEOUT"])
     def data_by_token(token):
         s = Serializer(app.config["SECRET_KEY"])
         try:

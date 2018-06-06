@@ -10,9 +10,6 @@ db = SQLAlchemy(app)
 basicauth = HTTPBasicAuth()
 auth = HTTPTokenAuth(scheme='Token')
 
-from flask_caching import Cache
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
-
 from app.controllers import default
 from app.controllers.v1.search import search
 from app.controllers.v1.build import build
