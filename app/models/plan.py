@@ -11,9 +11,11 @@ class Plan:
         self.maxCourses = maxCourses                    # The maximum number of courses a student will take per quarter
         self.currTermIdx = currTermIdx                  # Stores index of the current term we are preparing
         self.daysFilled = []                            # Days filled with courses in current term
-        self.typesTaken = typesTaken
+        self.typesTaken = typesTaken                    # List tracking count of each course type
         self.selectionsWithDay = selectionsWithDay      # Same as selectionOrder but courses are tuples ('name', 'day')
-        # Count of each type of course taken at this point in the plan. Used for goal checking.
+
+
+        # typesTaken is a count of each type of course taken at this point in the plan. Used for goal checking.
         # Each index represents a type of course. Stores the int num of that type taken
         # Indexes correspond to the following course types
         # 0:  Introductory Courses
