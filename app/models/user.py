@@ -23,6 +23,7 @@ class User(db.Model):
     elective = db.Column(db.String())
     number_credit_hours = db.Column(db.String())
     starting_quarter = db.Column(db.String())
+    disallow_online = db.Column(db.Boolean())
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -58,7 +59,8 @@ class User(db.Model):
                 'graduate_degree_concentration': self.graduate_degree_concentration,
                 'elective': self.elective,
                 'number_credit_hours': self.number_credit_hours,
-                'starting_quarter': self.starting_quarter}
+                'starting_quarter': self.starting_quarter,
+                'disallow_online': self.disallow_online}
 
     @property
     def curriculum(self):
@@ -128,7 +130,7 @@ class User(db.Model):
 
     @property
     def disallowOnline(self):
-        return False
+        return self.disallow_online
 
     @staticmethod
     @cache.memoize(app.config["CACHE_TIMEOUT"])

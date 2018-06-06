@@ -18,7 +18,8 @@ MOD = Blueprint("v1_build", __name__, url_prefix="/v1/build")
 @MOD.route("/auto_schedule", methods=["GET"])
 @auth.login_required
 def auto_schedule():
-    data = {'results': automated(g.user)}
+    data = {'results': automated(g.user),
+            'starting_quarter': g.user.starting_quarter}
     return jsonify(
         prepare_json_response(
             message="OK",
